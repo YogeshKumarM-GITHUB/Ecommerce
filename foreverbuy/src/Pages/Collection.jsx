@@ -1,7 +1,9 @@
+import CollectionList from "../Components/CollectionLIst";
+
 const Collection=()=>{
     return(
         <div>
-            Collection Page
+            <CollectionList/>
         </div>
     )
 }
