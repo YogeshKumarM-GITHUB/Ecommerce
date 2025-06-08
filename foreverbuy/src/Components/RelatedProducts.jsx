@@ -1,32 +1,38 @@
-import { useEffect } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
-import { bestsellerProducts } from '../features/products/productsSlice';
 import { useNavigate } from 'react-router-dom';
-const BestSeller = () => {
+import { useDispatch, useSelector } from 'react-redux'
+import { filteringProducts } from '../features/products/productsSlice';
+import { useEffect } from 'react';
+
+const RelatedProducts = ({ categories, type }) => {
+    //console.log(category,subcategory)
     const dispatch = useDispatch()
-    const navigate=useNavigate()
-    const { bestseller, loading, error } = useSelector(state => state.products);
+    const navigate = useNavigate()
+    const { filteredproducts, loading, error } = useSelector(state => state.products);
 
     useEffect(() => {
-        dispatch(bestsellerProducts())
-    }, [dispatch])
+        //dispatch(filteringProducts({category,subcategory,''})
+        dispatch(filteringProducts({ categories, type }))
+    }, [dispatch, categories, type])
 
-    
+    //console.log(category,subcategory)
     return (
         <div className='mt-[100px]'>
             <div>
                 <div>
-                    <h1 className="text-[#6b7280] text-[30px]">BEST SELLERS</h1>
+                    <h1 className="text-[#475269] text-[30px]">BEST SELLERS</h1>
                     <p className="text-[16px]">Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the.</p>
                 </div>
                 {/* Latest Collections List */}
                 <div className='mt-4'>
-                    <div className='grid grid-cols-[1fr_1fr] sm:grid-cols-[1fr_1fr_1fr_1fr_1fr]  gap-4'>
+                    <div className='grid grid-cols-[1fr] sm:grid-cols-[1fr_1fr_1fr_1fr_1fr]  gap-4'>
                         {
-                            bestseller.slice(0, 5).map((product, index) => {
+                            filteredproducts?.slice(0, 5).map((product, index) => {
                                 return (
                                     <div key={index} className='flex flex-col items-start'>
-                                        <div className='inline-block hover:cursor-pointer' onClick={()=>navigate(`/productpage/${product._id}`)}>
+                                        <div onClick={() => {
+                                            navigate(`/productpage/${product._id}`);
+                                            window.scrollTo(0, 0);
+                                        }} className='inline-block hover:cursor-pointer'>
                                             <img
                                                 src={product.image[0]}
                                                 alt={product.description}
@@ -45,4 +51,4 @@ const BestSeller = () => {
         </div>
     )
 }
-export default BestSeller;
+export default RelatedProducts

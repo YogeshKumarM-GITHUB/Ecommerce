@@ -1,5 +1,7 @@
 import { useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
 const LatestCollection = () => {
+    const navigate=useNavigate();
     const { products, loading, error } = useSelector(state => state.products);
 
     // console.log(products)
@@ -17,9 +19,9 @@ const LatestCollection = () => {
                             products.slice(0, 10).map((product, index) => {
                                 return (
                                     <div key={index} className='flex flex-col items-start'>
-                                        <div className='inline-block hover:cursor-pointer'>
+                                        <div onClick={()=>navigate(`/productpage/${product._id}`)} className='inline-block hover:cursor-pointer'>
                                             <img
-                                                src={product.image}
+                                                src={product.image[0]}
                                                 alt={product.description}
                                                 className='h-[300px] w-[260px] object-cover transform transition-all duration-300 hover:-translate-y-[5px] will-change-transform'
                                             />

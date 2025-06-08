@@ -1,7 +1,10 @@
+import ContactComp from "../Components/Contact";
+import Subscribe from '../Components/Subscribe'
 const Contact=()=>{
     return(
         <div>
-            Contact Page
+            <ContactComp/>
+            <Subscribe/>
         </div>
     )
 }

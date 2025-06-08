@@ -1,42 +1,19 @@
 import { useEffect, useMemo, useState } from "react"
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
+import { filteringProducts } from "../features/products/productsSlice";
 import { MdOutlineKeyboardArrowRight } from "react-icons/md";
+import { Navigate, useNavigate } from "react-router-dom";
+
 const CollectionList = () => {
     const [categories, setCategries] = useState([]);
     const [type, setType] = useState([]);
     const [filterbyprice, setfilterbyprice] = useState("");
-    const { products, loading, error } = useSelector(state => state.products);
-    let [filterproducts, setfilterproducts] = useState([]);
-    let [finalfilteredproducts, setfinalfilterproducts] = useState([])
-    const[showmenu,setshowmenu]=useState(false)
-
-    const filterresults = useMemo(() => {
-        // console.log(products)
-        if(products.length==0) return;
-
-        let filtered = products;
-        let maxprice = Math.max(...products.map(p => p.price));
-        let minprice = Math.min(...products.map(p => p.price));
-        console.log({ ...categories, categories })
-        if (categories.length > 0) {
-            filtered = filtered.filter(p => categories.includes(p.category));
-        }
-
-        if (type.length > 0) {
-            filtered = filtered.filter(p => type.includes(p.subCategory));
-            // setfinalfilterproducts(...filtered,filtered)
-        }
-
-        if (filterbyprice === 'sortbylowtohigh') {
-            filtered = filtered.slice().sort((a, b) => a.price - b.price);
-        } else if (filterbyprice === 'sortbyhightolow') {
-            filtered = filtered.slice().sort((a, b) => b.price - a.price);
-        } else if (filterbyprice === 'sortbyrelevant') {
-            filtered = filtered.filter(p => p.price >= minprice && p.price <= maxprice);
-        }
-
-        //console.log(filtered)
-        setfinalfilterproducts(filtered)
+    const { products, loading, error, filteredproducts } = useSelector(state => state.products);
+    const [showmenu, setshowmenu] = useState(false)
+    const dispatch = useDispatch();
+    const navigate=useNavigate();
+    const filterresults = useEffect(() => {
+        dispatch(filteringProducts({ categories, type, filterbyprice }))
     }, [categories, type, filterbyprice])
 
     const handleCategoryChange = (e) => {
@@ -65,9 +42,9 @@ const CollectionList = () => {
                 {/* right side filters */}
                 <div >
                     <div className="w-60">
-                        <h1 className="uppercase text-[20px] text-[#000000] text-start">Filters<MdOutlineKeyboardArrowRight  onClick={() => setshowmenu(!showmenu)}
-          className="block sm:hidden"/></h1>
-                        
+                        <h1 className="uppercase text-[20px] text-[#000000] text-start">Filters<MdOutlineKeyboardArrowRight onClick={() => setshowmenu(!showmenu)}
+                            className="block sm:hidden" /></h1>
+
                         <div className={`mt-4 border border-gray-400 flex flex-col items-start gap-2 px-2 ${showmenu ? 'block' : 'hidden'} sm:block`}>
                             <h1 className="uppercase text-[16px] text-[#000000]">Categories</h1>
                             <div className="flex flex-row items-center gap-2">
@@ -83,7 +60,7 @@ const CollectionList = () => {
                                 <label className="text-[#374151] text-[14px]">Kids</label>
                             </div>
                         </div>
-                        <div className={`mt-4 border border-gray-400 flex flex-col items-start gap-2 px-2 ${showmenu?'block':'hidden'} sm:block`}>
+                        <div className={`mt-4 border border-gray-400 flex flex-col items-start gap-2 px-2 ${showmenu ? 'block' : 'hidden'} sm:block`}>
                             <h1 className="uppercase text-[16px] text-[#000000]">TYPE</h1>
                             <div className="flex flex-row items-center gap-2">
                                 <input type="checkbox" name="Topwear" value="Topwear" onChange={handleTypechange} />
@@ -114,12 +91,12 @@ const CollectionList = () => {
                         <div className='ml-0 sm:ml-2 mt-4 sm:mt-0'>
                             <div className='grid grid-cols-[1fr_1fr] sm:grid-cols-[1fr_1fr_1fr_1fr] gap-4'>
                                 {
-                                    finalfilteredproducts.map((product, index) => {
+                                    filteredproducts.map((product, index) => {
                                         return (
                                             <div key={index} className='flex flex-col items-start'>
-                                                <div className='inline-block hover:cursor-pointer'>
+                                                <div className='inline-block hover:cursor-pointer' onClick={()=>navigate(`/productpage/${product._id}`)}>
                                                     <img
-                                                        src={product.image}
+                                                        src={product.image[0]}
                                                         alt={product.description}
                                                         className='h-[300px] w-[260px] object-cover transform transition-all duration-300 hover:-translate-y-[5px] will-change-transform'
                                                     />

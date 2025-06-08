@@ -1,7 +1,12 @@
+import AboutComp from '../Components/About'
+import WhyChoosUs from '../Components/WhyChooswUs';
+import Subscribe from '../Components/Subscribe';
 const About = () => {
     return (
         <div>
-            About Page
+            <AboutComp />
+            <WhyChoosUs />
+            <Subscribe />
         </div>
     )
 }
