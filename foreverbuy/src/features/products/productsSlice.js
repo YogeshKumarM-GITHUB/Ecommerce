@@ -8,7 +8,9 @@ const initialState = {
     loading: false,
     error: null,
     filteredproducts: [],
-    individualProduct:{}
+    individualProduct: {},
+    globalsearch: false,
+    cart: []
 }
 
 const productsSlice = createSlice({
@@ -20,22 +22,25 @@ const productsSlice = createSlice({
             state.bestseller = bestsellers;
         },
         filteringProducts: (state, action) => {
-           // debugger
+            // debugger
             // Filtering code
             if (state.products.length == 0) return;
 
             let filtered = state.products;
-           // console.log(action.payload.categories,action.payload.type);
-           const { categories = [], type = [], filterbyprice } = action.payload;
-           //console.log(categories,type,action.payload);
+            // console.log(action.payload.categories,action.payload.type);
+            const { categories = [], type = [], filterbyprice, searchGlobal } = action.payload;
+            //console.log(categories,type,action.payload);
             let maxprice = Math.max(...state.products.map(p => p.price));
             let minprice = Math.min(...state.products.map(p => p.price));
 
-            if (categories?.length > 0 ) {
-                filtered = filtered.filter(p => categories.includes(p.category));
-               // console.log(categories);
+            if (searchGlobal) {
+                //console.log(action.payload)
+                filtered = filtered.filter(p => p.name.toLowerCase().includes(searchGlobal.toLowerCase()))
             }
-
+            if (categories?.length > 0) {
+                filtered = filtered.filter(p => categories.includes(p.category));
+                // console.log(categories);
+            }
             if (type?.length > 0) {
                 filtered = filtered.filter(p => type.includes(p.subCategory));
                 // setfinalfilterproducts(...filtered,filtered)
@@ -48,18 +53,55 @@ const productsSlice = createSlice({
             } else if (filterbyprice === 'sortbyrelevant') {
                 filtered = filtered.filter(p => p.price >= minprice && p.price <= maxprice);
             }
-            state.filteredproducts=filtered;
+            state.filteredproducts = filtered;
             //end of filtering code
         },
-        GetProductById:(state,action)=>{
+        GetProductById: (state, action) => {
             //console.log(action.payload._id)
             //debugger
             const IndProd = state.products.filter((item) => item._id === action.payload._id);
-        
-            state.individualProduct=IndProd||{};
+
+            state.individualProduct = IndProd || {};
+        },
+        OpenGlobalSearch: (state, action) => {
+            state.globalsearch = action.payload
+        },
+        Addtocart: (state, action) => {
+            let { productid, quantity, price, size,image,name } = action.payload;
+            const productexists = state.cart.findIndex(item => item.productid === productid && item.size==size);
+          //  console.log(productid, quantity, price, size, productexists)
+            if (productexists !== -1) {
+                const IsSizeAvailable = state.cart.findIndex(item => item.size == size);
+                //console.log('size', IsSizeAvailable)
+                if (IsSizeAvailable == -1) {
+                    //console.log('size is not available',size)
+                    state.cart.push({
+                        ...action.payload,
+                        quantity: quantity || 1,
+                        price: price,
+                        size,
+                        image,
+                        name
+                    })
+                } else {
+                    //console.log('size is not available',size)
+                    state.cart[productexists].quantity += 1;
+                }
+            }
+            else {
+                state.cart.push({
+                    ...action.payload,
+                    quantity: quantity || 1,
+                    size: size,
+                    price: price,
+                    image,
+                    name
+                })
+            }
+            console.log(JSON.stringify(state.cart))
         }
     }
 })
 
-export const { bestsellerProducts,filteringProducts,GetProductById } = productsSlice.actions;
+export const { bestsellerProducts, filteringProducts, GetProductById, OpenGlobalSearch, Addtocart } = productsSlice.actions;
 export default productsSlice.reducer;

@@ -3,13 +3,14 @@ import { assets } from "../assets/frontend_assets/assets";
 import { useEffect, useState } from "react";
 import RelatedProducts from "../Components/RelatedProducts";
 import { useDispatch, useSelector } from "react-redux";
-import { GetProductById } from "../features/products/productsSlice";
+import { GetProductById, Addtocart } from "../features/products/productsSlice";
 
 const ProductPage = () => {
     const { _id } = useParams();
     const dispatch = useDispatch();
     const { individualProduct, loading } = useSelector(state => state.products);
     const [selectedimg, setselectedimg] = useState([]);
+    const [selectedsize, setselectedsize] = useState("");
 
     useEffect(() => {
         if (_id) {
@@ -75,7 +76,8 @@ const ProductPage = () => {
                         {individualProduct[0].sizes?.map((size, index) => (
                             <button
                                 key={index}
-                                className="border border-[#f3f4f6] px-[15px] py-[10px] bg-[#f3f4f6]"
+                                className={`border border-[#f3f4f6] px-[15px] py-[10px] bg-[#f3f4f6] ${selectedsize===size?'bg-green-700 text-white':'bg-[#f3f4f6]'}`}
+                                onClick={() => setselectedsize(size)}
                             >
                                 {size}
                             </button>
@@ -83,7 +85,8 @@ const ProductPage = () => {
                     </div>
 
                     <div className="flex flex-col items-start mt-2">
-                        <button className="float-left bg-black text-white mt-4 px-5 py-2 cursor-pointer transform transition-all duration-300">
+                        <button onClick={() => dispatch(Addtocart({ productid: individualProduct[0]._id, price: individualProduct[0].price, size: selectedsize,image:individualProduct[0].image[0],name:individualProduct[0].name }))} 
+                        className="float-left bg-black text-white mt-4 px-5 py-2 cursor-pointer transform transition-all duration-300">
                             Add To Cart
                         </button>
                         <p className="text-[#6b7280] text-[16px] text-start mt-6">
@@ -111,12 +114,12 @@ const ProductPage = () => {
 
             {/* Related Products */}
             <div className="mt-8">
-                
-                    <RelatedProducts
-                        categories={individualProduct[0].category}
-                        type={individualProduct[0].subCategory}
-                    />
-                
+
+                <RelatedProducts
+                    categories={individualProduct[0].category}
+                    type={individualProduct[0].subCategory}
+                />
+
             </div>
         </div>
     );
