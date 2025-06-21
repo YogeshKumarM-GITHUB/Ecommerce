@@ -23,13 +23,13 @@ const Footer = () => {
                     <ul className=' flex flex-col items-start sm:items-center gap-1 mt-4 text-[#4b5563]'>
                          <h1 className='font-bold text-black'>GET IN TOUCH</h1>
                         <NavLink>+1-000-000-0000</NavLink>
-                        <NavLink>greatstackdev@gmail.com</NavLink>
+                        <NavLink>yogeshkumarm105@gmail.com</NavLink>
                         <NavLink>Instagarm</NavLink>
                     </ul>
                 </div>
             </div>
             <hr className='border-t-2 border-[#4b5563] mt-2' />
-            <p className='text-center mt-4'>Copyright 2024@ greatstack.dev - All Right Reserved.</p>
+            <p className='text-center mt-4'>Copyright 2024@ yogeshkumar.dev - All Right Reserved.</p>
         </div>
     )
 }

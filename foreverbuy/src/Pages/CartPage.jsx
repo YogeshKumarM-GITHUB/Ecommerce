@@ -80,7 +80,7 @@ const CartPage = () => {
                             />
 
                             <RiDeleteBin6Line
-                                onClick={()=>handleRemoveItem(item.productid,item.size)}
+                                onClick={()=>{handleRemoveItem(item.productid,item.size);toast("cart removed successfully.")}}
                                 className="text-red-500 text-xl cursor-pointer"
                                 title="Remove item"
                             />
