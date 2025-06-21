@@ -11,12 +11,12 @@ const MyOrders = () => {
                 {
                     ordereddetails?.items?.length > 0 && ordereddetails.items?.map((orderitem, index) => {
                         return (
-                            <div className="flex flex-row items-center justify-between">
+                            <div className="flex flex-col md:flex-row items-starts md:items-center justify-between">
                                 <div>
 
-                                    <div className="flex flex-row items-start mt-2">
+                                    <div className="flex  flex-col md:flex-row items-start mt-2">
                                         <hr className="border-b-2 border-gray-600"/>
-                                        <img className="h-[140px] w-[100px]" src={orderitem.image} />
+                                        <img className="h-full md:h-[140px] w-full md:w-[100px]" src={orderitem.image} />
                                         <div className="flex flex-col items-start ml-2">
                                             <h1 className="sm:text-base font-medium"></h1>
                                             <label>${orderitem.price}</label>
@@ -29,11 +29,11 @@ const MyOrders = () => {
                                     </div>
 
                                 </div>
-                                <div>
-                                    <label className="text-sm md:text-base">{ordereddetails.status}</label>
+                                <div >
+                                    <label className="text-sm md:text-base float-left ml-2 mt-2 md:mt-0">{ordereddetails.status}</label>
                                 </div>
                                 <div>
-                                    <button className="border px-4 py-2 text-sm font-medium rounded-sm">Track Order</button>
+                                    <button className="border px-4 py-2 text-sm font-medium rounded-sm float-left ml-2 mt-2 md:mt-0">Track Order</button>
                                 </div>
                             </div>
                         )
