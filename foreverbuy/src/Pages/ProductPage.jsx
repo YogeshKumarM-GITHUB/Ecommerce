@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import RelatedProducts from "../Components/RelatedProducts";
 import { useDispatch, useSelector } from "react-redux";
 import { GetProductById, Addtocart } from "../features/products/productsSlice";
+import { toast } from "react-toastify";
 
 const ProductPage = () => {
     const { _id } = useParams();
@@ -76,7 +77,7 @@ const ProductPage = () => {
                         {individualProduct[0].sizes?.map((size, index) => (
                             <button
                                 key={index}
-                                className={`border border-[#f3f4f6] px-[15px] py-[10px] bg-[#f3f4f6] ${selectedsize===size?'bg-green-700 text-white':'bg-[#f3f4f6]'}`}
+                                className={`border border-[#f3f4f6] px-[15px] py-[10px] bg-[#f3f4f6] ${selectedsize === size ? 'bg-green-700 text-white' : 'bg-[#f3f4f6]'}`}
                                 onClick={() => setselectedsize(size)}
                             >
                                 {size}
@@ -85,8 +86,17 @@ const ProductPage = () => {
                     </div>
 
                     <div className="flex flex-col items-start mt-2">
-                        <button onClick={() => dispatch(Addtocart({ productid: individualProduct[0]._id, price: individualProduct[0].price, size: selectedsize,image:individualProduct[0].image[0],name:individualProduct[0].name }))} 
-                        className="float-left bg-black text-white mt-4 px-5 py-2 cursor-pointer transform transition-all duration-300">
+                        <button onClick={() => {
+                            dispatch(Addtocart({
+                                productid: individualProduct[0]._id,
+                                price: individualProduct[0].price,
+                                size: selectedsize,
+                                image: individualProduct[0].image[0],
+                                name: individualProduct[0].name
+                            }));
+                            toast("Cart Added Successfully");
+                        }}
+                            className="float-left bg-black text-white mt-4 px-5 py-2 cursor-pointer transform transition-all duration-300">
                             Add To Cart
                         </button>
                         <p className="text-[#6b7280] text-[16px] text-start mt-6">
@@ -121,7 +131,7 @@ const ProductPage = () => {
                 />
 
             </div>
-        </div>
+        </div >
     );
 };
 

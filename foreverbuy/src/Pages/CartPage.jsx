@@ -1,12 +1,14 @@
 import { useSelector } from "react-redux";
 import { RiDeleteBin6Line } from "react-icons/ri";
 import { useEffect, useState } from "react";
-
+import { Navigate, useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 const CartPage = () => {
     const { cart } = useSelector(state => state.products);
     const [cartdetails, setcartDetails] = useState([]);
     const [subtotal, setsubtotal] = useState(0);
     const [finaltotal, setfinalTotal] = useState(0);
+    const navigate=useNavigate();
 
     // Update quantity in cartdetails
     const handleQuantityChange = (productid, size, quantity) => {
@@ -106,10 +108,13 @@ const CartPage = () => {
                         <span>${finaltotal}</span>
                     </div>
 
-                    <button className="bg-black text-white w-full py-3 mt-4 hover:bg-gray-800 transition">
+                    <button onClick={
+                        ()=>{navigate('/placeorder');
+                        toast("Check Out Done Successfully.")}} className="bg-black text-white w-full py-3 mt-4 hover:bg-gray-800 transition">
                         Proceed to Checkout
                     </button>
                 </div>
+
             </div>
         </div>
     );

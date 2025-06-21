@@ -10,7 +10,24 @@ const initialState = {
     filteredproducts: [],
     individualProduct: {},
     globalsearch: false,
-    cart: []
+    cart: [],
+    ordereddetails: {
+        items: [],
+        status: '',
+        ordereddate: '',
+        PaymentType: '',
+        address: {
+            firstname: '',
+            lastname: '',
+            email:'',
+            street: '',
+            city: '',
+            state: '',
+            zipcode: '',
+            phone: '',
+            country:''
+        }
+    }
 }
 
 const productsSlice = createSlice({
@@ -66,10 +83,23 @@ const productsSlice = createSlice({
         OpenGlobalSearch: (state, action) => {
             state.globalsearch = action.payload
         },
+        placeOrder: (state, action) => {
+            const todaydate = new Date();
+            const formatteddate = todaydate.toDateString();
+            state.ordereddetails = {
+                items: [...state.cart],
+                status: 'Ordered Placed',
+                ordereddate: formatteddate,
+                PaymentType: action.payload.PaymentType,
+                address:{...action.payload.address}
+            }
+            state.cart = []
+            console.log(state.ordereddetails)
+        },
         Addtocart: (state, action) => {
-            let { productid, quantity, price, size,image,name } = action.payload;
-            const productexists = state.cart.findIndex(item => item.productid === productid && item.size==size);
-          //  console.log(productid, quantity, price, size, productexists)
+            let { productid, quantity, price, size, image, name } = action.payload;
+            const productexists = state.cart.findIndex(item => item.productid === productid && item.size == size);
+            //  console.log(productid, quantity, price, size, productexists)
             if (productexists !== -1) {
                 const IsSizeAvailable = state.cart.findIndex(item => item.size == size);
                 //console.log('size', IsSizeAvailable)
@@ -103,5 +133,5 @@ const productsSlice = createSlice({
     }
 })
 
-export const { bestsellerProducts, filteringProducts, GetProductById, OpenGlobalSearch, Addtocart } = productsSlice.actions;
+export const { bestsellerProducts, filteringProducts, GetProductById, OpenGlobalSearch, Addtocart,placeOrder } = productsSlice.actions;
 export default productsSlice.reducer;
