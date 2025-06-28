@@ -10,7 +10,7 @@ const initialState = {
     productdata: {}
 };
 
-// ✅ Correct AsyncThunknp
+
 const AddProducts = createAsyncThunk(
     'Product/AddProduct',
     async (productdata, { rejectWithValue }) => {
@@ -28,7 +28,7 @@ const AddProducts = createAsyncThunk(
     }
 );
 
-// ✅ Slice
+
 const productsSlice = createSlice({
     name: 'product',
     initialState,
@@ -54,6 +54,6 @@ const productsSlice = createSlice({
     }
 });
 
-// ✅ Correct export (No need to export action here, it's a thunk)
+
 export  {AddProducts}
 export default productsSlice.reducer;
