@@ -1,9 +1,21 @@
-const express=require('express')
-const router=express.Router();
+// routes/ProductRoutes.js
+const express = require('express');
+const upload = require('../Config/MulterConfig');
+const { AddProduct, GetAllProducts } = require('../Controller/ProductController');
 
-const {AddProduct,GetAllProducts}=require('../Controller/ProductController')
+const router = express.Router();
 
-router.post('/addproduct',AddProduct);
-router.get('/getproducts',GetAllProducts);
+router.post(
+  '/addproduct',
+  upload.fields([
+    { name: 'FirstImage' },
+    { name: 'SecondImage' },
+    { name: 'ThirdImage' },
+    { name: 'FourthImage' }
+  ]),
+  AddProduct
+);
 
-module.exports=router;
+router.get('/getproducts', GetAllProducts);
+
+module.exports = router;
