@@ -5,6 +5,7 @@ import { IoChevronBackOutline } from "react-icons/io5";
 import { useSelector, useDispatch } from "react-redux";
 import GlobalSearch from './GlobalSearch';
 import { OpenGlobalSearch } from "../features/products/productsSlice";
+import { Logout } from '../features/User/UserSlice';
 
 const Navbar = () => {
     const [setMenuIcon, showMenuIcon] = useState(false);
@@ -13,6 +14,15 @@ const Navbar = () => {
     const totalQuantity = cart.reduce((sum, item) => sum + item.quantity, 0);
     const navigate = useNavigate();
     const dispatch=useDispatch();
+
+
+    const logout=()=>{
+        dispatch(Logout()).then((res)=>{
+            if(res.payload.success){
+                navigate('/login')
+            }
+        })
+    }
 
     return (
         <div className='relative'>
@@ -45,7 +55,7 @@ const Navbar = () => {
                             <div className='flex flex-col gap-2 w-36 py-3 px-5 bg-slate-100 cursor-pointer'>
                                 <p className='hover:text-black'>My Profile</p>
                                 <p onClick={()=>navigate('/myorder')} className='hover:text-black'>My Orders</p>
-                                <p className='hover:text-black'>Logout</p>
+                                <p onClick={logout} className='hover:text-black'>Logout</p>
                             </div>
                         </div>
                     </div>

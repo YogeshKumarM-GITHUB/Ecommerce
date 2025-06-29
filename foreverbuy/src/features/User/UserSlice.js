@@ -45,6 +45,18 @@ const LoginUser=createAsyncThunk(
     }
 )
 
+const Logout=createAsyncThunk(
+    'User/LogOut',async()=>{
+        try{
+                    localStorage.removeItem('token');
+                    return {success:true};
+        }
+        catch(error){
+            console.log(error.response?.data || error.message)
+        }
+    }
+)
+
 const userSlice=createSlice({
      name: 'product',
     initialState,
@@ -71,9 +83,18 @@ const userSlice=createSlice({
           }).addCase(LoginUser.rejected,(state,action)=>{
             state.loading=false;
             state.error=action.payload;
+          }).addCase(Logout.pending,(state)=>{
+            state.loading=true;
+            state.error=""
+          }).addCase(Logout.fulfilled,(state,action)=>{
+            state.loading=false;
+            state.success=action.payload;
+          }).addCase(LoginUser.rejected,(state,action)=>{
+            state.loading=false;
+            state.error=action.payload;
           })
     }
 })
 
-export {RegisteUser,LoginUser}
+export {RegisteUser,LoginUser,Logout}
 export default userSlice.reducer;
