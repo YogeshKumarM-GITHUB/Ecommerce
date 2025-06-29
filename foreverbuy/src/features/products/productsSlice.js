@@ -36,7 +36,11 @@ const GetAllProducts=createAsyncThunk(
     'Product/GetAllProducts',
     async()=>{
          try{
-              const response=await axios.get(`${BASEURL}/api/getproducts`);
+              const response=await axios.get(`${BASEURL}/api/getproducts`,{
+                headers:{
+                    Authorization: `Bearer ${localStorage.getItem('token')}`
+                }
+              });
               console.log(response.data,"Products")
               return response.data;
          }
@@ -50,7 +54,10 @@ const Getbestsellerproducts=createAsyncThunk(
     'Product/Getbestsellerproducts',
     async()=>{
         try{
-            const response=await axios.get(`${BASEURL}/api/getbestsellerproducts`);
+            const response=await axios.get(`${BASEURL}/api/getbestsellerproducts`,{headers:{
+                Authorization: `Bearer ${localStorage.getItem('token')}`
+            }
+            });
             return response.data;
         }
         catch(error){
@@ -64,7 +71,10 @@ const GetSingleProduct=createAsyncThunk(
     async({_id})=>{
         try{
                // console.log(_id);
-                const response=await axios.get(`${BASEURL}/api/getsingleproduct/${_id}`);
+                const response=await axios.get(`${BASEURL}/api/getsingleproduct/${_id}`,{headers:{
+                Authorization:`Bearer ${localStorage.getItem('token')}`
+                }
+            });
 //console.log(response.data);
                return  response.data;
         }

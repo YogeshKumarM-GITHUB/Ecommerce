@@ -2,7 +2,7 @@
 const express = require('express');
 const upload = require('../Config/MulterConfig');
 const { AddProduct, GetAllProducts,DeleteProductById,Getbestsellerproducts,GetSingleProduct } = require('../Controller/ProductController');
-
+const VerifyToken = require('../Middleware/AuthUser.js');
 const router = express.Router();
 
 router.post(
@@ -16,9 +16,9 @@ router.post(
   AddProduct
 );
 
-router.get('/getproducts', GetAllProducts);
-router.delete('/delproduct/:_Id',DeleteProductById)
-router.get('/getbestsellerproducts',Getbestsellerproducts)
-router.get('/getsingleproduct/:_Id',GetSingleProduct)
+router.get('/getproducts',VerifyToken ,GetAllProducts);
+router.delete('/delproduct/:_Id',VerifyToken,DeleteProductById)
+router.get('/getbestsellerproducts',VerifyToken,Getbestsellerproducts)
+router.get('/getsingleproduct/:_Id',VerifyToken,GetSingleProduct)
 
 module.exports = router;

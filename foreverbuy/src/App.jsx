@@ -14,6 +14,7 @@ import { ToastContainer, toast } from 'react-toastify';
 import { useEffect } from 'react'
 import { useDispatch } from 'react-redux'
 import { GetAllProducts } from './features/products/productsSlice'
+import Login from './Pages/Login'
 function App() {
 
   const dispatch=useDispatch();
@@ -35,6 +36,7 @@ function App() {
         <Route path='/cartpage' element={<CartPage />} />
         <Route path='/placeorder' element={<PlaceOrder />} />
         <Route path='/myorder' element={<MyOrders />} />
+        <Route path='/login' element={<Login/>}/>
       </Routes>
       <Footer />
     </div>
