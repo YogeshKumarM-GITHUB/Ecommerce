@@ -1,7 +1,7 @@
 // routes/ProductRoutes.js
 const express = require('express');
 const upload = require('../Config/MulterConfig');
-const { AddProduct, GetAllProducts,DeleteProductById } = require('../Controller/ProductController');
+const { AddProduct, GetAllProducts,DeleteProductById,Getbestsellerproducts,GetSingleProduct } = require('../Controller/ProductController');
 
 const router = express.Router();
 
@@ -18,5 +18,7 @@ router.post(
 
 router.get('/getproducts', GetAllProducts);
 router.delete('/delproduct/:_Id',DeleteProductById)
+router.get('/getbestsellerproducts',Getbestsellerproducts)
+router.get('/getsingleproduct/:_Id',GetSingleProduct)
 
 module.exports = router;

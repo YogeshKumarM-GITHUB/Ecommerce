@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from "react"
 import { useSelector, useDispatch } from "react-redux";
-import { filteringProducts } from "../features/products/productsSlice";
+import { filteringProducts, GetAllProducts } from "../features/products/productsSlice";
 import { MdOutlineKeyboardArrowRight } from "react-icons/md";
 import { Navigate, useNavigate } from "react-router-dom";
 import GlobalSearch from "./GlobalSearch";
@@ -10,13 +10,18 @@ const CollectionList = () => {
     const [type, setType] = useState([]);
     const [filterbyprice, setfilterbyprice] = useState("");
     const [searchGlobal, setsearchGlobal] = useState("");
-    const { products, loading, error, filteredproducts, globalsearch } = useSelector(state => state.products);
+    const { listofproducts, loading, error, globalsearch } = useSelector(state => state.products);
     const [showmenu, setshowmenu] = useState(false)
     const dispatch = useDispatch();
     const navigate = useNavigate();
+   // console.log(listofproducts,'listofproducts');
     const filterresults = useEffect(() => {
         dispatch(filteringProducts({ categories, type, filterbyprice, searchGlobal }))
     }, [categories, type, filterbyprice, searchGlobal])
+
+    useEffect(()=>{
+            dispatch(GetAllProducts())
+    },[])
 
     const handleCategoryChange = (e) => {
         const { value, checked } = e.target;
@@ -97,18 +102,18 @@ const CollectionList = () => {
                             <div className='ml-0 sm:ml-2 mt-4 sm:mt-0'>
                                 <div className='grid grid-cols-[1fr_1fr] sm:grid-cols-[1fr_1fr_1fr_1fr] gap-4'>
                                     {
-                                        filteredproducts.map((product, index) => {
+                                      listofproducts.length>0 &&  listofproducts.map((product, index) => {
                                             return (
                                                 <div key={index} className='flex flex-col items-start'>
                                                     <div className='inline-block hover:cursor-pointer' onClick={() => navigate(`/productpage/${product._id}`)}>
                                                         <img
-                                                            src={product.image[0]}
-                                                            alt={product.description}
+                                                            src={product.FirstImage}
+                                                            alt={product.ProductDescrption}
                                                             className='h-[300px] w-[260px] object-cover transform transition-all duration-300 hover:-translate-y-[5px] will-change-transform'
                                                         />
                                                     </div>
-                                                    <p className='text-[#374151] text-[14px] mt-2 text-start'>{product.name}</p>
-                                                    <p className='text-[#374151] text-[14px]'>${product.price}</p>
+                                                    <p className='text-[#374151] text-[14px] mt-2 text-start'>{product.ProductName}</p>
+                                                    <p className='text-[#374151] text-[14px]'>${product.ProductPrice}</p>
                                                 </div>
                                             )
                                         })

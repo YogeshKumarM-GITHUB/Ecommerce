@@ -1,9 +1,10 @@
-import { createSlice } from '@reduxjs/toolkit';
-import { products } from '../../assets/frontend_assets/assets';
+import { createSlice,createAsyncThunk } from '@reduxjs/toolkit';
+import axios from 'axios'
+// import { products } from '../../assets/frontend_assets/assets';
 
-
+const BASEURL = 'http://localhost:5000';
 const initialState = {
-    products,
+    listofproducts:[],
     bestseller: [],
     loading: false,
     error: null,
@@ -30,25 +31,70 @@ const initialState = {
     }
 }
 
+
+const GetAllProducts=createAsyncThunk(
+    'Product/GetAllProducts',
+    async()=>{
+         try{
+              const response=await axios.get(`${BASEURL}/api/getproducts`);
+              console.log(response.data,"Products")
+              return response.data;
+         }
+         catch(error){
+            console.log(error.response?.data || error.message)
+         }
+    }
+)
+
+const Getbestsellerproducts=createAsyncThunk(
+    'Product/Getbestsellerproducts',
+    async()=>{
+        try{
+            const response=await axios.get(`${BASEURL}/api/getbestsellerproducts`);
+            return response.data;
+        }
+        catch(error){
+            console.log(error.response?.data || error.message)
+        }
+    }
+)
+
+const GetSingleProduct=createAsyncThunk(
+    'Product/GetSingleProd',
+    async({_id})=>{
+        try{
+               // console.log(_id);
+                const response=await axios.get(`${BASEURL}/api/getsingleproduct/${_id}`);
+//console.log(response.data);
+               return  response.data;
+        }
+        catch(error){
+            console.log(error.response?.data||error.message)
+        }
+    }
+)
+
+
 const productsSlice = createSlice({
     name: 'product',
     initialState,
     reducers: {
-        bestsellerProducts: (state, action) => {
-            const bestsellers = state.products.filter(p => p.bestseller === true);
-            state.bestseller = bestsellers;
-        },
+        // bestsellerProducts: (state, action) => {
+        //     const bestsellers = state.listofproducts.filter(p => p.bestseller === true);
+        //     state.bestseller = bestsellers;
+        // },
         filteringProducts: (state, action) => {
             // debugger
             // Filtering code
-            if (state.products.length == 0) return;
+            if (state.listofproducts.length == 0) return;
 
-            let filtered = state.products;
+            let filtered = state.listofproducts;
+            console.log(filtered,'filtered');
             // console.log(action.payload.categories,action.payload.type);
             const { categories = [], type = [], filterbyprice, searchGlobal } = action.payload;
             //console.log(categories,type,action.payload);
-            let maxprice = Math.max(...state.products.map(p => p.price));
-            let minprice = Math.min(...state.products.map(p => p.price));
+            let maxprice = Math.max(...state.listofproducts.map(p => p.price));
+            let minprice = Math.min(...state.listofproducts.map(p => p.price));
 
             if (searchGlobal) {
                 //console.log(action.payload)
@@ -73,13 +119,13 @@ const productsSlice = createSlice({
             state.filteredproducts = filtered;
             //end of filtering code
         },
-        GetProductById: (state, action) => {
-            //console.log(action.payload._id)
-            //debugger
-            const IndProd = state.products.filter((item) => item._id === action.payload._id);
+        // GetProductById: (state, action) => {
+        //     //console.log(action.payload._id)
+        //     //debugger
+        //     const IndProd = state.listofproducts.filter((item) => item._id === action.payload._id);
 
-            state.individualProduct = IndProd || {};
-        },
+        //     state.individualProduct = IndProd || {};
+        // },
         OpenGlobalSearch: (state, action) => {
             state.globalsearch = action.payload
         },
@@ -130,8 +176,53 @@ const productsSlice = createSlice({
             }
             console.log(JSON.stringify(state.cart))
         }
+    },
+    extraReducers: (builder) => {
+            builder
+                .addCase(GetAllProducts.pending, (state) => {
+                    state.loading = true;
+                    state.success = false;
+                    state.error = null;
+                })
+                .addCase(GetAllProducts.fulfilled, (state, action) => {
+                    state.loading = false;
+                    state.success = true;
+                    state.listofproducts = action.payload.data;
+                })
+                .addCase(GetAllProducts.rejected, (state, action) => {
+                    state.loading = false;
+                    state.success = false;
+                    state.listofproducts = [];
+                    state.error = action.payload;
+                }).addCase(Getbestsellerproducts.pending,(state)=>{
+                    state.loading=true;
+                    state.success=false;
+                    state.error=null;
+                }).addCase(Getbestsellerproducts.fulfilled,(state,action)=>{
+                    state.loading=false;
+                    state.success=true;
+                    state.bestseller=action.payload.data;
+                }).addCase(Getbestsellerproducts.rejected,(state,action)=>{
+                    state.loading=true;
+                    state.success=false;
+                    state.error=null;
+                }).addCase(GetSingleProduct.pending,(state)=>{
+                    state.loading=true;
+                    state.success=false;
+                    state.error=null;
+                }).addCase(GetSingleProduct.fulfilled,(state,action)=>{
+                    state.loading=false;
+                    state.success=true;
+                    state.individualProduct=action.payload.data;
+                    //console.log(action.payload,state.individualProduct,'indprod')
+                }).addCase(GetSingleProduct.rejected,(state,action)=>{
+                    state.loading=true;
+                    state.success=false;
+                    state.error=null;
+                })
     }
 })
 
-export const { bestsellerProducts, filteringProducts, GetProductById, OpenGlobalSearch, Addtocart,placeOrder } = productsSlice.actions;
+export {GetAllProducts,Getbestsellerproducts,GetSingleProduct}
+export const { bestsellerProducts, filteringProducts,  OpenGlobalSearch, Addtocart,placeOrder } = productsSlice.actions;
 export default productsSlice.reducer;

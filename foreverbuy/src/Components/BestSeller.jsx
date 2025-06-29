@@ -1,17 +1,17 @@
 import { useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { bestsellerProducts } from '../features/products/productsSlice';
+import { Getbestsellerproducts } from '../features/products/productsSlice';
 import { useNavigate } from 'react-router-dom';
 const BestSeller = () => {
     const dispatch = useDispatch()
-    const navigate=useNavigate()
+    const navigate = useNavigate()
     const { bestseller, loading, error } = useSelector(state => state.products);
 
     useEffect(() => {
-        dispatch(bestsellerProducts())
+        dispatch(Getbestsellerproducts())
     }, [dispatch])
 
-    
+
     return (
         <div className='mt-[100px]'>
             <div>
@@ -23,18 +23,18 @@ const BestSeller = () => {
                 <div className='mt-4'>
                     <div className='grid grid-cols-[1fr_1fr] sm:grid-cols-[1fr_1fr_1fr_1fr_1fr]  gap-4'>
                         {
-                            bestseller.slice(0, 5).map((product, index) => {
+                            bestseller.length > 0 && bestseller.slice(0, 5).map((product, index) => {
                                 return (
                                     <div key={index} className='flex flex-col items-start'>
-                                        <div className='inline-block hover:cursor-pointer' onClick={()=>navigate(`/productpage/${product._id}`)}>
+                                        <div className='inline-block hover:cursor-pointer' onClick={() => navigate(`/productpage/${product._id}`)}>
                                             <img
-                                                src={product.image[0]}
-                                                alt={product.description}
+                                                src={product.FirstImage}
+                                                alt={product.ProductDescrption}
                                                 className='h-[300px] w-[260px] object-cover transform transition-all duration-300 hover:-translate-y-[5px] will-change-transform'
                                             />
                                         </div>
-                                        <p className='text-[#374151] text-[14px] mt-2 text-start'>{product.name}</p>
-                                        <p className='text-[#374151] text-[14px]'>${product.price}</p>
+                                        <p className='text-[#374151] text-[14px] mt-2 text-start'>{product.ProductName}</p>
+                                        <p className='text-[#374151] text-[14px]'>${product.ProductPrice}</p>
                                     </div>
                                 )
                             })

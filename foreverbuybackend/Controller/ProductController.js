@@ -107,5 +107,56 @@ const DeleteProductById=async(req,res)=>{
 }
 }
 
+const Getbestsellerproducts=async(req,res)=>{
+    try{
+         const GetAllbestsellProd=await Product.find({Addtobestseller:true});
+         if(GetAllProducts){
+            res.status(200).json({
+               success:true,
+               message:"Best Seller Product Fetched Successfully",
+               data:GetAllbestsellProd
+            })
+         }
+         else{
+            res.status(400).json({
+                success:false,
+                message:"Bad Request"
+            })
+         }
+    }
+    catch(error){
+        res.json(400).json({
+            success:false,
+            message:error.message
+        })
+    }
+}
 
-module.exports = { AddProduct, GetAllProducts,DeleteProductById };
+const GetSingleProduct=async(req,res)=>{
+    try{
+        const { _Id } = req.params;
+        //console.log(_Id)
+        const singleprod = await Product.findOne({_id:_Id});
+        if(singleprod){
+            res.status(200).json({
+                success:true,
+                message:"Record fetched successfully",
+                data:singleprod
+            })
+        }else{
+            res.status(400).json({
+                success:false,
+                message:"Failed to fetch the record",
+                data:null
+            })
+        }
+    }
+    catch(error){
+        res.status(400).json({
+            success:false,
+            message:error.message
+        })
+    }
+}
+
+module.exports = { AddProduct, GetAllProducts,DeleteProductById,Getbestsellerproducts,GetSingleProduct };

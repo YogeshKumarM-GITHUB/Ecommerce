@@ -3,7 +3,7 @@ import { assets } from "../assets/frontend_assets/assets";
 import { useEffect, useState } from "react";
 import RelatedProducts from "../Components/RelatedProducts";
 import { useDispatch, useSelector } from "react-redux";
-import { GetProductById, Addtocart } from "../features/products/productsSlice";
+import { GetSingleProduct, Addtocart } from "../features/products/productsSlice";
 import { toast } from "react-toastify";
 
 const ProductPage = () => {
@@ -15,20 +15,21 @@ const ProductPage = () => {
 
     useEffect(() => {
         if (_id) {
-            dispatch(GetProductById({ _id }));
+            dispatch(GetSingleProduct({ _id }));
         }
     }, [_id, dispatch]);
 
     useEffect(() => {
-        if (individualProduct[0]?.image[0]?.length > 0) {
-            setselectedimg(individualProduct[0]?.image[0])
-        }
+       //// if (individualProduct[0]?.image[0]?.length > 0) {
+            setselectedimg(individualProduct?.FirstImage)
+       // }
     }, [individualProduct])
 
+   //console.log(individualProduct.ProductName,'singleprod');
 
     // If still loading or no product
     //console.log(individualProduct[0])
-    if (loading || !individualProduct[0] || !individualProduct[0]?.name) {
+    if (loading || !individualProduct || !individualProduct?.ProductName) {
         return <div className="text-center text-gray-500 py-10">Loading product details...</div>;
     }
 
@@ -37,7 +38,7 @@ const ProductPage = () => {
             <div className="flex flex-col lg:flex-row gap-8">
                 {/* Left Thumbnails */}
                 <div className="flex lg:flex-col gap-4">
-                    {individualProduct[0].image?.map((img, index) => (
+                    {/* {individualProduct[0].image?.map((img, index) => (
                         <img
                             key={index}
                             src={img}
@@ -45,7 +46,35 @@ const ProductPage = () => {
                             className="w-20 h-24 object-cover border hover:border-black cursor-pointer rounded"
                             onClick={() => setselectedimg(img)}
                         />
-                    ))}
+                    ))} */}
+                    <img
+                            key={individualProduct?.FirstImage}
+                            src={individualProduct?.FirstImage}
+                            alt={`thumb-${1}`}
+                            className="w-20 h-24 object-cover border hover:border-black cursor-pointer rounded"
+                            onClick={() => setselectedimg(individualProduct?.FirstImage)}
+                        />
+                        <img
+                            key={individualProduct?.SecondImage}
+                            src={individualProduct?.SecondImage}
+                            alt={`thumb-${1}`}
+                            className="w-20 h-24 object-cover border hover:border-black cursor-pointer rounded"
+                            onClick={() => setselectedimg(individualProduct?.SecondImage)}
+                        />
+                        <img
+                            key={individualProduct?.ThirdImage}
+                            src={individualProduct?.ThirdImage}
+                            alt={`thumb-${1}`}
+                            className="w-20 h-24 object-cover border hover:border-black cursor-pointer rounded"
+                            onClick={() => setselectedimg(individualProduct?.ThirdImage)}
+                        />
+                        <img
+                            key={individualProduct?.FourthImage}
+                            src={individualProduct?.FourthImage}
+                            alt={`thumb-${1}`}
+                            className="w-20 h-24 object-cover border hover:border-black cursor-pointer rounded"
+                            onClick={() => setselectedimg(individualProduct?.FourthImage)}
+                        />
                 </div>
 
                 {/* Main Image */}
@@ -59,7 +88,7 @@ const ProductPage = () => {
 
                 {/* Product Info */}
                 <div className="flex-1 max-w-[390px]">
-                    <h1 className="text-[24px] text-[#000000] text-start">{individualProduct[0].name}</h1>
+                    <h1 className="text-[24px] text-[#000000] text-start">{individualProduct.ProductName}</h1>
                     <div className="flex flex-row items-center gap-1">
                         {Array.from({ length: 4 }).map((_, index) => (
                             <img
@@ -70,11 +99,11 @@ const ProductPage = () => {
                         ))}
                         (122)
                     </div>
-                    <p className="text-start mt-1 text-[30px] text-[#000000]">${individualProduct[0].price}</p>
-                    <p className="text-[#6b7280] text-[16px] text-start mt-5">{individualProduct[0].description}</p>
+                    <p className="text-start mt-1 text-[30px] text-[#000000]">${individualProduct.ProductPrice}</p>
+                    <p className="text-[#6b7280] text-[16px] text-start mt-5">{individualProduct.ProductDescrption}</p>
                     <p className="text-[16px] font-bold text-start mt-2">Select Size</p>
                     <div className="flex flex-row items-center gap-2">
-                        {individualProduct[0].sizes?.map((size, index) => (
+                        {individualProduct.ProductSizes?.map((size, index) => (
                             <button
                                 key={index}
                                 className={`border border-[#f3f4f6] px-[15px] py-[10px] bg-[#f3f4f6] ${selectedsize === size ? 'bg-green-700 text-white' : 'bg-[#f3f4f6]'}`}
@@ -88,11 +117,11 @@ const ProductPage = () => {
                     <div className="flex flex-col items-start mt-2">
                         <button onClick={() => {
                             dispatch(Addtocart({
-                                productid: individualProduct[0]._id,
-                                price: individualProduct[0].price,
+                                productid: individualProduct._id,
+                                price: individualProduct.ProductPrice,
                                 size: selectedsize,
-                                image: individualProduct[0].image[0],
-                                name: individualProduct[0].name
+                                image: individualProduct.FirstImage,
+                                name: individualProduct.ProductName
                             }));
                             toast("Cart Added Successfully");
                         }}
@@ -126,8 +155,8 @@ const ProductPage = () => {
             <div className="mt-8">
 
                 <RelatedProducts
-                    categories={individualProduct[0].category}
-                    type={individualProduct[0].subCategory}
+                    categories={individualProduct.ProductCategory}
+                    type={individualProduct.ProductSubCategory}
                 />
 
             </div>
