@@ -1,27 +1,22 @@
-import { useState } from "react";
-
+import { useEffect, useState } from "react";
+import { useDispatch } from "react-redux";
+import { useSelector } from "react-redux";
+import { GetAllProducts,DeleteProductById } from "../features/AddProducts/AddProductSlice";
 const ListItems = () => {
-  const [products, setProducts] = useState([
-    {
-      id: 1,
-      name: "Kid Tapered Slim Fit Trouser",
-      category: "Kids",
-      price: 38,
-      image: "https://example.com/image1.jpg",
-    },
-    {
-      id: 2,
-      name: "Men Round Neck Pure Cotton T-shirt",
-      category: "Men",
-      price: 64,
-      image: "https://example.com/image2.jpg",
-    },
-    // Add more products as needed...
-  ]);
-
-  const handleDelete = (id) => {
-    setProducts(products.filter((product) => product.id !== id));
+  const dispatch=useDispatch();
+  const{listofproducts}=useSelector((state)=>state.products)
+  
+  useEffect(()=>{
+   // debugger;
+    dispatch(GetAllProducts());
+  },[])
+  
+  const handleDelete = async(id) => {
+     await dispatch(DeleteProductById(id)).unwrap(); // Wait for the deletion to finish
+     dispatch(GetAllProducts());
   };
+
+
 
   return (
     <div className="p-6 bg-gray-50 min-h-screen">
@@ -38,17 +33,17 @@ const ListItems = () => {
             </tr>
           </thead>
           <tbody>
-            {products.map((prod) => (
-              <tr key={prod.id} className="border-b hover:bg-gray-50">
+            {listofproducts.length>0 && listofproducts.map((prod) => (
+              <tr key={prod._id} className="border-b hover:bg-gray-50">
                 <td className="px-4 py-2">
-                  <img src={prod.image} alt={prod.name} className="w-12 h-12 object-cover rounded" />
+                  <img src={prod.FirstImage} alt={prod.ProductName} className="w-12 h-12 object-cover rounded" />
                 </td>
-                <td className="px-4 py-2">{prod.name}</td>
-                <td className="px-4 py-2">{prod.category}</td>
-                <td className="px-4 py-2">${prod.price}</td>
+                <td className="px-4 py-2">{prod.ProductName}</td>
+                <td className="px-4 py-2">{prod.ProductCategory}</td>
+                <td className="px-4 py-2">${prod.ProductPrice}</td>
                 <td className="px-4 py-2">
                   <button
-                    onClick={() => handleDelete(prod.id)}
+                    onClick={() => handleDelete(prod._id)}
                     className="text-red-500 font-bold hover:text-red-700"
                   >
                     X
@@ -56,7 +51,7 @@ const ListItems = () => {
                 </td>
               </tr>
             ))}
-            {products.length === 0 && (
+            {listofproducts.length === 0 && (
               <tr>
                 <td colSpan="5" className="text-center px-4 py-4 text-gray-500">
                   No products available.

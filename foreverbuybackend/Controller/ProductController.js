@@ -1,6 +1,7 @@
 const product = require('../Model/Product.js'); // `product` is the model
 const cloudinary = require('../Config/CloudinaryConfig.js');
 const fs = require('fs');
+const Product = require('../Model/Product.js');
 
 const uploadToCloudinary = async (filePath) => {
     const result = await cloudinary.uploader.upload(filePath);
@@ -80,4 +81,31 @@ const GetAllProducts = async (req, res) => {
     }
 };
 
-module.exports = { AddProduct, GetAllProducts };
+const DeleteProductById=async(req,res)=>{
+    try {
+        const { _Id } = req.params;
+        const singleprod = await Product.findById(_Id);
+        if (singleprod) {
+            await Product.findByIdAndDelete(_Id);
+            res.json(200).json({
+                success: true,
+                message: "Product deleted successfully"
+            })
+        }
+        else {
+            res.json(400).json({
+                success: false,
+                message: "Error whle deleting"
+            })
+        }
+    }
+    catch (error) {
+    res.status(400).json({
+        success: false,
+        message: error.message
+    })
+}
+}
+
+
+module.exports = { AddProduct, GetAllProducts,DeleteProductById };

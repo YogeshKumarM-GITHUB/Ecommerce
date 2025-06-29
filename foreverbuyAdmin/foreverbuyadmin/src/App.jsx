@@ -18,7 +18,7 @@ function App() {
       <div className="flex flex-1 overflow-hidden">
         {/* Sidebar */}
         <Sidebar />
-
+       
         {/* Page Content */}
         <div className="flex-1 overflow-y-auto p-6 bg-gray-50">
           <Routes>

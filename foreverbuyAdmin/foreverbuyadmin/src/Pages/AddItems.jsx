@@ -2,6 +2,8 @@ import { useRef, useState, useEffect } from 'react';
 import { assets } from '../assets/admin_assets/assets';
 import { useDispatch } from 'react-redux';
 import { AddProducts } from '../features/AddProducts/AddProductSlice'
+import { toast } from 'react-toastify';
+import { useSelector } from 'react-redux';
 
 const AddItems = () => {
     const fileInputRef1 = useRef(null);
@@ -10,6 +12,7 @@ const AddItems = () => {
     const fileInputRef4 = useRef(null);
     const dispatch = useDispatch();
 
+    const [loading, setloading] = useState(false);
     const [image1, setimage1] = useState("");
     const [image2, setimage2] = useState("");
     const [image3, setimage3] = useState("");
@@ -28,8 +31,7 @@ const AddItems = () => {
     ];
 
     const sizes = ['S', 'M', 'L', 'XL', 'XXL'];
-
-    const [productdata, setproductdata] = useState({
+    const initialState = {
         FirstImage: "",
         SecondImage: "",
         ThirdImage: "",
@@ -41,7 +43,8 @@ const AddItems = () => {
         ProductPrice: 0,
         ProductSizes: [],
         Addtobestseller: false,
-    });
+    }
+    const [productdata, setproductdata] = useState(initialState);
 
     const handleclick = (fileInputRef) => {
         fileInputRef.current.click();
@@ -81,8 +84,19 @@ const AddItems = () => {
     const handleSubmit = (e) => {
         e.preventDefault();
         debugger
-      
-        dispatch(AddProducts(productdata));
+        setloading(true);
+
+        dispatch(AddProducts(productdata)).then((result) => {
+            if (result.payload?.success) {
+                toast("Product saved successfully");
+            } else {
+                toast.error("Failed to save product");
+            }
+            setloading(false);
+            setproductdata(initialState)
+        });
+        
+
     }
 
     return (
@@ -220,7 +234,14 @@ const AddItems = () => {
                         <span>Add to bestseller</span>
                     </div>
 
-                    <button type="submit" className='text-white bg-black w-[100px] h-10 cursor-pointer'>ADD</button>
+                    <button
+                        type="submit"
+                        disabled={loading}
+                        className={`text-white w-[100px] h-10 ${loading ? 'bg-gray-500 cursor-not-allowed' : 'bg-black cursor-pointer'}`}
+                    >
+                        {loading ? "Saving..." : "ADD"}
+                    </button>
+
                 </form>
             </div>
         </div>
