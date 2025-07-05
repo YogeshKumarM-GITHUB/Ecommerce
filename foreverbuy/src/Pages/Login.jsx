@@ -1,8 +1,9 @@
 import { useState } from "react";
 import { useDispatch } from "react-redux";
-import { LoginUser, RegisteUser } from "../features/User/UserSlice";
+import { GetUserDetails, LoginUser, RegisteUser } from "../features/User/UserSlice";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
+import { useSelector } from "react-redux";
 
 const Login = () => {
   const [showLogin, setShowLogin] = useState(false);
@@ -14,7 +15,7 @@ const Login = () => {
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
-
+  const{UserDetails}=useSelector((state)=>state.user)
   const handleUserData = (e) => {
     const { name, value } = e.target;
     setUserData({ ...userdata, [name]: value });
@@ -33,17 +34,27 @@ const Login = () => {
     });
   };
 
-  const handleLogin = () => {
-    dispatch(LoginUser(userdata)).then((res) => {
-        console.log(res);
-      if (res?.payload) {
-        toast.success("Login successful");
-        navigate("/");
-      } else {
-        toast.error(res.payload?.message || "Login failed");
-      }
-    });
-  };
+ const handleLogin = () => {
+  dispatch(LoginUser(userdata)).then((res) => {
+    if (res?.payload) {
+      toast.success("Login successful");
+     const{Email}=userdata;
+     //debugger;
+      dispatch(GetUserDetails({Email})).then((userRes) => {
+       // console.log(userRes,"Response");
+        if (userRes?.payload.success) {
+          console.log("Fetched user details:", userRes.payload);
+          navigate("/");
+        } else {
+          toast.error("Failed to load user details");
+        }
+      });
+    } else {
+      toast.error(res.payload?.message || "Login failed");
+    }
+  });
+};
+
 
   return (
     <div className="flex items-center justify-center mt-[100px]">

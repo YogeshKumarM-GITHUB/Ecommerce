@@ -33,7 +33,7 @@ const AddProduct = async (req, res) => {
             Addtobestseller
         } = req.body;
 
-        // ✅ Use correct model name `product` (lowercase) and pass the constructed object
+      
         const newProduct = new product({
             FirstImage: imageUrls.FirstImage || '',
             SecondImage: imageUrls.SecondImage || '',

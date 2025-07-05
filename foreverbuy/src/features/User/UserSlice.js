@@ -37,7 +37,7 @@ const LoginUser=createAsyncThunk(
                      });
                      console.log(response)
                      localStorage.setItem("token",response.data.token);
-                     return response.data.token;
+                     return response.data;
               }
               catch(error){
                 console.log(error.response?.data || error.message)
@@ -56,6 +56,25 @@ const Logout=createAsyncThunk(
         }
     }
 )
+
+const GetUserDetails=createAsyncThunk(
+    'User/GetUserDetails',
+    async({Email})=>{
+        try{
+               // console.log(_id);
+              // debugger;
+                const response=await axios.get(`${BASEURL}/api/userdetails/getuserdetails/${Email}`,{headers:{
+                Authorization:`Bearer ${localStorage.getItem('token')}`
+                }
+            });
+               return  response.data;
+        }
+        catch(error){
+            console.log(error.response?.data||error.message)
+        }
+    }
+)
+
 
 const userSlice=createSlice({
      name: 'product',
@@ -76,10 +95,12 @@ const userSlice=createSlice({
           }).addCase(LoginUser.pending,(state)=>{
             state.loading=true,
             state.error=""
-            state.token=action.payload.token;
           }).addCase(LoginUser.fulfilled,(state,action)=>{
             state.loading=false,
             state.success=true
+            state.token=action.payload.token;
+            //state.UserDetails=action.payload.data;
+           // console.log(action.payload.data,'data');
           }).addCase(LoginUser.rejected,(state,action)=>{
             state.loading=false;
             state.error=action.payload;
@@ -89,12 +110,25 @@ const userSlice=createSlice({
           }).addCase(Logout.fulfilled,(state,action)=>{
             state.loading=false;
             state.success=action.payload;
-          }).addCase(LoginUser.rejected,(state,action)=>{
+            state.UserDetails="";
+          }).addCase(Logout.rejected,(state,action)=>{
             state.loading=false;
             state.error=action.payload;
+          }).addCase(GetUserDetails.pending,(state)=>{
+            state.loading=true;
+            state.error=""
+          }).addCase(GetUserDetails.fulfilled,(state,action)=>{
+            state.UserDetails=action.payload.data;
+            state.loading=false;
+            state.error=""
+            console.log(action.payload,"User444");
+          }).addCase(GetUserDetails.rejected,(state,action)=>{
+            state.UserDetails="",
+            state.loading=false,
+            state.error=action.payload
           })
     }
 })
 
-export {RegisteUser,LoginUser,Logout}
+export {RegisteUser,LoginUser,Logout,GetUserDetails}
 export default userSlice.reducer;

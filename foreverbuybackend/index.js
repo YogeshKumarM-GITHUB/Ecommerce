@@ -5,6 +5,7 @@ const cors=require('cors');
 const app=express();
 const prodroutes=require('./Routes/ProductRoutes')
 const userroutes=require('./Routes/UserRoutes.js');
+const userdetailsroutes=require('./Routes/UserInfoRoute.js')
 const bodyParser = require('body-parser');
 app.use(cors());
 app.use(bodyParser.json())
@@ -19,4 +20,5 @@ app.get('/',(req,res)=>{
 })
 app.use('/api',prodroutes);
 app.use('/api/user',userroutes);
+app.use('/api/userdetails',userdetailsroutes)
 app.listen(PORT,()=>console.log("server started"));

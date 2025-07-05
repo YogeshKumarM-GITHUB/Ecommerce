@@ -74,7 +74,7 @@ const Login=async(req,res)=>{
             })
           }
 
-          const token=jsonweb.sign({id:IsEmailAvail._id,UserName:IsEmailAvail.UserName},process.env.SECRETKEY,{expiresIn:'1h'});
+          const token=jsonweb.sign({id:IsEmailAvail._id,UserName:IsEmailAvail.UserName,Email:IsEmailAvail.Email},process.env.SECRETKEY,{expiresIn:'1h'});
 
           return res.json({
             token,

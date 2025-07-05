@@ -10,15 +10,19 @@ import { Logout } from '../features/User/UserSlice';
 const Navbar = () => {
     const [setMenuIcon, showMenuIcon] = useState(false);
     const [openGlobalSearch, setOpenGlobalSearch] = useState(false);
-    const { globalsearch ,cart} = useSelector(state => state.products);
+    const { globalsearch, cart } = useSelector(state => state.products);
     const totalQuantity = cart.reduce((sum, item) => sum + item.quantity, 0);
     const navigate = useNavigate();
-    const dispatch=useDispatch();
+    const dispatch = useDispatch();
+    const { UserDetails } = useSelector(state => state.user)
+
+    console.log(UserDetails, "userdetails666")
 
 
-    const logout=()=>{
-        dispatch(Logout()).then((res)=>{
-            if(res.payload.success){
+
+    const logout = () => {
+        dispatch(Logout()).then((res) => {
+            if (res.payload.success) {
                 navigate('/login')
             }
         })
@@ -48,21 +52,29 @@ const Navbar = () => {
                     <button className='border border-gray-300 rounded-full  text-[#374151]   px-6 py-2 text-[12px] font-medium '>Admin Panel</button>
                 </ul>
                 <div className='flex flex-row items-center gap-4'>
-                    <img src={assets.search_icon} alt="" className='w-5 cursor-pointer' onClick={() => dispatch(OpenGlobalSearch(true))}  />
+                    {
+                        UserDetails.length !== 0 && UserDetails[0]?.UserName ? (
+                            <div className='h-6 w-6 bg-green-600 rounded-full text-white flex items-center justify-center text-sm font-medium'>
+                                <p>{UserDetails[0].UserName[0]}</p>
+                            </div>
+                        ) : null
+                    }
+                    <img src={assets.search_icon} alt="" className='w-5 cursor-pointer' onClick={() => dispatch(OpenGlobalSearch(true))} />
                     <div className='group relative'>
                         <img src={assets.profile_icon} alt="" className='w-5 cursor-pointer' />
                         <div className='group-hover:block hidden absolute dropdown-menu right-0 pt-4'>
                             <div className='flex flex-col gap-2 w-36 py-3 px-5 bg-slate-100 cursor-pointer'>
                                 <p className='hover:text-black'>My Profile</p>
-                                <p onClick={()=>navigate('/myorder')} className='hover:text-black'>My Orders</p>
+                                <p onClick={() => navigate('/myorder')} className='hover:text-black'>My Orders</p>
                                 <p onClick={logout} className='hover:text-black'>Logout</p>
                             </div>
                         </div>
                     </div>
-                    <div onClick={()=>navigate('/cartpage')} className='relative'>
-                          <img src={assets.cart_icon} alt="" className='w-5 cursor-pointer' />
-                          <p className='absolute -top-3 -right-5 font-bold bg-orange-300 w-6 h-6 rounded-full'>{totalQuantity}</p> 
+                    <div onClick={() => navigate('/cartpage')} className='relative'>
+                        <img src={assets.cart_icon} alt="" className='w-5 cursor-pointer' />
+                        <p className='absolute -top-3 -right-5 font-bold bg-orange-300 w-6 h-6 rounded-full'>{totalQuantity}</p>
                     </div>
+
                     <img src={assets.menu_icon} alt="" className='block sm:hidden md:hidden lg:hidden xl:hidden  w-5 cursor-pointer' onClick={() => showMenuIcon(!setMenuIcon)} />
                 </div>
             </div>
@@ -90,6 +102,13 @@ const Navbar = () => {
                 <div className='px-4 border-b-2 border-gray-100 w-full text-start py-2 hover:bg-black'>
                     <p className='text-[16px] text-[#4B5563] hover:text-white'>Admin Panel</p>
                 </div>
+                {
+                    UserDetails.length !== 0 && UserDetails[0]?.UserName ? (
+                        <div className='h-6 w-6 bg-green-600 rounded-full text-white flex items-center justify-center text-sm font-medium'>
+                            <p>{UserDetails[0].UserName[0]}</p>
+                        </div>
+                    ) : null
+                }
             </div>
             <hr />
         </div>
