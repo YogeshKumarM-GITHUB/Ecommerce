@@ -1,5 +1,5 @@
 import './App.css'
-import { Routes, Route, Navigate, useNavigate } from 'react-router-dom'
+import { Routes, Route, Navigate, useNavigate, useLocation } from 'react-router-dom'
 import Home from './Pages/Home'
 import Collection from './Pages/Collection'
 import Contact from './Pages/Contact'
@@ -28,11 +28,11 @@ function App() {
 
   useEffect(() => {
     const token = localStorage.getItem('token');
-   // debugger;
+    // debugger;
     if (token) {
       try {
         const decoded = jwtDecode(token);
-        console.log(decoded,'token')
+        console.log(decoded, 'token')
         const Email = decoded.Email;
         if (Email) {
           dispatch(GetUserDetails({ Email }));
@@ -69,6 +69,14 @@ function App() {
     }
   };
 
+  const ProtectedLogin = ({ children }) => {
+    const token = localStorage.getItem('token');
+    if (token) {
+      return <Navigate to="/" replace />;
+    }
+    return children;
+  }
+
   return (
     <div className='-mt-9'>
       <ToastContainer />
@@ -83,8 +91,8 @@ function App() {
         <Route path='/placeorder' element={<ProtectedRoute><PlaceOrder /></ProtectedRoute>} />
         <Route path='/myorder' element={<ProtectedRoute><MyOrders /></ProtectedRoute>} />
 
-    
-        <Route path='/login' element={<Login />} />
+
+        <Route path='/login' element={<ProtectedLogin><Login /></ProtectedLogin>} />
       </Routes>
       <Footer />
     </div>

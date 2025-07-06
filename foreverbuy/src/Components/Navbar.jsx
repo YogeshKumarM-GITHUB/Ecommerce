@@ -61,7 +61,7 @@ const Navbar = () => {
                                 <img src={assets.search_icon} alt="" className='w-5 cursor-pointer' onClick={() => dispatch(OpenGlobalSearch(true))} />
                                 <div className='group relative'>
                                     <img src={assets.profile_icon} alt="" className='w-5 cursor-pointer' />
-                                    <div className='group-hover:block hidden absolute dropdown-menu right-0 pt-4'>
+                                    <div className='group-hover:block hidden absolute dropdown-menu right-0 pt-4 z-[1000]'>
                                         <div className='flex flex-col gap-2 w-36 py-3 px-5 bg-slate-100 cursor-pointer'>
                                             <p className='hover:text-black'>My Profile</p>
                                             <p onClick={() => navigate('/myorder')} className='hover:text-black'>My Orders</p>

@@ -128,7 +128,7 @@ const UpdateOrderStatusByAdmin = async (req, res) => {
         //console.log(req.params);
         const UpdatedData = await OrderItems.findByIdAndUpdate(OrderId,
             { Status: Status }, // or { $set: { Status } }
-            { new: true });
+            { new: true });  
         if (UpdatedData) {
             return res.status(200).json({
                 success: true,
