@@ -1,72 +1,32 @@
+import { useEffect } from "react";
 import { useState } from "react";
-
-const ordersData = [
-  {
-    id: 1,
-    items: [
-      { name: "Boy Round Neck Pure Cotton T-shirt", size: "XL", quantity: 1 },
-    ],
-    totalItems: 1,
-    totalAmount: 70,
-    status: "Delivered",
-    customer: {
-      name: "Jay Butani",
-      address: "19, Nilkanth bungalows,\nSurat, Gujarat, India, 395006",
-    },
-    method: "COD",
-    payment: "Pending",
-    date: "6/22/2025",
-  },
-  {
-    id: 2,
-    items: [
-      { name: "Men Round Neck Pure Cotton T-shirt", size: "S", quantity: 1 },
-      { name: "Boy Round Neck Pure Cotton T-shirt", size: "S", quantity: 1 },
-    ],
-    totalItems: 2,
-    totalAmount: 134,
-    status: "Order Placed",
-    customer: {
-      name: "Ziad Mohamed",
-      address: "Benha,\nBenha, Al, Egypt, 0000",
-    },
-    method: "COD",
-    payment: "Pending",
-    date: "6/22/2025",
-  },
-  {
-    id: 3,
-    items: [
-      { name: "Men Round Neck Pure Cotton T-shirt", size: "M", quantity: 1 },
-    ],
-    totalItems: 1,
-    totalAmount: 90,
-    status: "Order Placed",
-    customer: {
-      name: "Jayesh Singh",
-      address: `444, P.P MARG, CUFFE PARADE, BACKBAY BUS DEPOT ,MUMBAI , COLABA, 400005 MAHARATRA,\nMUMBAI, Maharashtra, India, 400005`,
-    },
-    method: "COD",
-    payment: "Pending",
-    date: "6/22/2025",
-  },
-];
+import { useDispatch, useSelector } from "react-redux";
+import { GetAllOrders, UpdateOrderedItemsStatus } from "../features/AddProducts/AddProductSlice";
 
 const OrdersPage = () => {
-  const [orders, setOrders] = useState(ordersData);
-
-  const handleStatusChange = (id, newStatus) => {
-    const updated = orders.map((order) =>
-      order.id === id ? { ...order, status: newStatus } : order
-    );
-    setOrders(updated);
+  //const [orders, setOrders] = useState(ordersData);
+  const dispatch = useDispatch();
+  const handleStatusChange = async (id, newStatus) => {
+    try {
+      await dispatch(UpdateOrderedItemsStatus({ orderId: id, Status: newStatus })).unwrap();
+      await dispatch(GetAllOrders());
+    } catch (err) {
+      console.error("Failed to update status:", err);
+    }
   };
 
+  const { AllOrdersData } = useSelector((state) => state.products)
+
+  useEffect(() => {
+    dispatch(GetAllOrders())
+  }, [])
+
+  console.log(AllOrdersData, "AO")
   return (
     <div className="p-6 bg-gray-50 min-h-screen">
       <h1 className="text-xl font-semibold mb-6">Order Page</h1>
       <div className="flex flex-col gap-6">
-        {orders.map((order) => (
+        {AllOrdersData?.length != 0 && AllOrdersData?.map((order) => (
           <div
             key={order.id}
             className="bg-white shadow border rounded p-4 flex flex-col md:flex-row justify-between gap-4"
@@ -78,18 +38,24 @@ const OrdersPage = () => {
                 alt="package"
                 className="w-10 h-10 object-contain"
               />
+              <p className="font-bold">OrderId: {order._id}</p>
               <div>
                 <div className="font-medium">
-                  {order.items.map((item, index) => (
+                  {order.CartItem.map((item, index) => (
                     <div key={index}>
-                      {item.name} x {item.size}
+                      {item.productName} x {item.size}
                     </div>
                   ))}
                 </div>
                 <div className="text-sm mt-2">
-                  <strong>{order.customer.name}</strong>
+                  <strong>{order.FirstName}</strong>
                   <br />
-                  {order.customer.address}
+                  {order.Street}
+                  <br />{order.City}
+                  <br />{order.State}
+                  <br />{order.Zipcode}
+                  <br />{order.Country}
+                  <br />{order.Phone}
                 </div>
               </div>
             </div>
@@ -97,18 +63,18 @@ const OrdersPage = () => {
             {/* Right Side */}
             <div className="text-sm text-right md:w-64 flex flex-col justify-between gap-2">
               <div>
-                Items: {order.totalItems}
+                Items: {order.CartItem.length}
                 <br />
-                Method: {order.method}
+
                 <br />
-                Payment: {order.payment}
+                Payment: {order.PaymentMethod}
                 <br />
-                Date: {order.date}
+                Date: {order.OrderDate}
               </div>
-              <div className="text-lg font-semibold">${order.totalAmount}</div>
+              <div className="text-lg font-semibold">${order.Total}</div>
               <select
-                value={order.status}
-                onChange={(e) => handleStatusChange(order.id, e.target.value)}
+                value={order.Status}
+                onChange={(e) => handleStatusChange(order._id, e.target.value)}
                 className="border px-2 py-1 rounded text-sm"
               >
                 <option>Order Placed</option>

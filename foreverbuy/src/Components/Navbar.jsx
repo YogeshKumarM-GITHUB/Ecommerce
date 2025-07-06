@@ -16,7 +16,7 @@ const Navbar = () => {
     const dispatch = useDispatch();
     const { UserDetails } = useSelector(state => state.user)
 
-    console.log(UserDetails, "userdetails666")
+    // console.log(UserDetails, "userdetails666")
 
 
 
@@ -54,28 +54,31 @@ const Navbar = () => {
                 <div className='flex flex-row items-center gap-4'>
                     {
                         UserDetails.length !== 0 && UserDetails[0]?.UserName ? (
-                            <div className='h-6 w-6 bg-green-600 rounded-full text-white flex items-center justify-center text-sm font-medium'>
-                                <p>{UserDetails[0].UserName[0]}</p>
-                            </div>
+                            <>
+                                <div className='h-6 w-6 bg-green-600 rounded-full text-white flex items-center justify-center text-sm font-medium'>
+                                    <p>{UserDetails[0].UserName[0]}</p>
+                                </div>
+                                <img src={assets.search_icon} alt="" className='w-5 cursor-pointer' onClick={() => dispatch(OpenGlobalSearch(true))} />
+                                <div className='group relative'>
+                                    <img src={assets.profile_icon} alt="" className='w-5 cursor-pointer' />
+                                    <div className='group-hover:block hidden absolute dropdown-menu right-0 pt-4'>
+                                        <div className='flex flex-col gap-2 w-36 py-3 px-5 bg-slate-100 cursor-pointer'>
+                                            <p className='hover:text-black'>My Profile</p>
+                                            <p onClick={() => navigate('/myorder')} className='hover:text-black'>My Orders</p>
+                                            <p onClick={logout} className='hover:text-black'>Logout</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div onClick={() => navigate('/cartpage')} className='relative'>
+                                    <img src={assets.cart_icon} alt="" className='w-5 cursor-pointer' />
+                                    <p className='absolute -top-3 -right-5 font-bold bg-orange-300 w-6 h-6 rounded-full'>{totalQuantity}</p>
+                                </div>
+
+                                <img src={assets.menu_icon} alt="" className='block sm:hidden md:hidden lg:hidden xl:hidden  w-5 cursor-pointer' onClick={() => showMenuIcon(!setMenuIcon)} />
+                            </>
                         ) : null
                     }
-                    <img src={assets.search_icon} alt="" className='w-5 cursor-pointer' onClick={() => dispatch(OpenGlobalSearch(true))} />
-                    <div className='group relative'>
-                        <img src={assets.profile_icon} alt="" className='w-5 cursor-pointer' />
-                        <div className='group-hover:block hidden absolute dropdown-menu right-0 pt-4'>
-                            <div className='flex flex-col gap-2 w-36 py-3 px-5 bg-slate-100 cursor-pointer'>
-                                <p className='hover:text-black'>My Profile</p>
-                                <p onClick={() => navigate('/myorder')} className='hover:text-black'>My Orders</p>
-                                <p onClick={logout} className='hover:text-black'>Logout</p>
-                            </div>
-                        </div>
-                    </div>
-                    <div onClick={() => navigate('/cartpage')} className='relative'>
-                        <img src={assets.cart_icon} alt="" className='w-5 cursor-pointer' />
-                        <p className='absolute -top-3 -right-5 font-bold bg-orange-300 w-6 h-6 rounded-full'>{totalQuantity}</p>
-                    </div>
 
-                    <img src={assets.menu_icon} alt="" className='block sm:hidden md:hidden lg:hidden xl:hidden  w-5 cursor-pointer' onClick={() => showMenuIcon(!setMenuIcon)} />
                 </div>
             </div>
             {/* for mobile view */}

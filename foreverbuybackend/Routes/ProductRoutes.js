@@ -21,4 +21,5 @@ router.delete('/delproduct/:_Id',VerifyToken,DeleteProductById)
 router.get('/getbestsellerproducts',VerifyToken,Getbestsellerproducts)
 router.get('/getsingleproduct/:_Id',VerifyToken,GetSingleProduct)
 
+
 module.exports = router;

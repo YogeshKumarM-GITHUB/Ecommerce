@@ -13,7 +13,7 @@ const RelatedProducts = ({ categories, type }) => {
     useEffect(() => {
         //dispatch(filteringProducts({category,subcategory,''})
        // debugger
-        console.log(listofproducts)
+       // console.log(listofproducts)
         //dispatch(GetAllProducts())
         dispatch(filteringProducts({ categories, type }))
     }, [dispatch, categories, type])

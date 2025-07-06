@@ -12,23 +12,8 @@ const initialState = {
     individualProduct: {},
     globalsearch: false,
     cart: [],
-    ordereddetails: {
-        items: [],
-        status: '',
-        ordereddate: '',
-        PaymentType: '',
-        address: {
-            firstname: '',
-            lastname: '',
-            email:'',
-            street: '',
-            city: '',
-            state: '',
-            zipcode: '',
-            phone: '',
-            country:''
-        }
-    },placeorder:{}
+    ordereddetails: { }
+    ,placeorder:{}
 }
 
 
@@ -84,7 +69,7 @@ const GetSingleProduct=createAsyncThunk(
     }
 )
 
-const PLaceOrder=createAsyncThunk('Product/PlaceOrder',async(cartData)=>{
+const PLaceOrder=createAsyncThunk('Product/PlaceOrder',async({cartData})=>{
     try{
         debugger;
        const response=await axios.post(`${BASEURL}/api/placeorder/addcartitems`,cartData,{headers:{
@@ -93,6 +78,22 @@ const PLaceOrder=createAsyncThunk('Product/PlaceOrder',async(cartData)=>{
             });
 //console.log(response.data);
                return  response.data;
+    }
+    catch(error){
+        console.log(error.response?.data||error.message)
+    }
+})
+
+const OrderedDetails=createAsyncThunk('Product/IndOrders',async({_id})=>{
+    try{
+             // debugger;
+              const response=await axios.get(`${BASEURL}/api/placeorder/fetchorders/${_id}`,{
+                headers:{
+                    Authorization:`Bearer ${localStorage.getItem('token')}`
+                }
+              })
+              console.log(response.data,"orderdetails");
+              return response.data;
     }
     catch(error){
         console.log(error.response?.data||error.message)
@@ -165,7 +166,7 @@ const productsSlice = createSlice({
                 address:{...action.payload.address}
             }
             state.cart = []
-            console.log(state.ordereddetails)
+          //  console.log(state.ordereddetails)
         },
         Addtocart: (state, action) => {
             let { productid, quantity, price, size, image, name } = action.payload;
@@ -199,7 +200,7 @@ const productsSlice = createSlice({
                     name
                 })
             }
-            console.log(JSON.stringify(state.cart))
+          //  console.log(JSON.stringify(state.cart))
         }
     },
     extraReducers: (builder) => {
@@ -256,10 +257,20 @@ const productsSlice = createSlice({
                     state.loading=false,
                     state.placeorder=null,
                     state.error=action.payload
+                }).addCase(OrderedDetails.pending,(state)=>{
+                    state.loading=true,
+                    state.error=""
+                }).addCase(OrderedDetails.fulfilled,(state,action)=>{
+                    state.ordereddetails=action.payload.data;
+                    state.loading=false;
+                    state.error=""
+                }).addCase(OrderedDetails.rejected,(state,action)=>{
+                    state.loading=false;
+                    state.error=action.payload
                 })
     }
 })
 
-export {GetAllProducts,Getbestsellerproducts,GetSingleProduct,PLaceOrder}
+export {GetAllProducts,Getbestsellerproducts,GetSingleProduct,PLaceOrder,OrderedDetails}
 export const { bestsellerProducts, filteringProducts,  OpenGlobalSearch, Addtocart,placeOrder } = productsSlice.actions;
 export default productsSlice.reducer;

@@ -7,7 +7,7 @@ const ListItems = () => {
   const{listofproducts}=useSelector((state)=>state.products)
   
   useEffect(()=>{
-   // debugger;
+   debugger;
     dispatch(GetAllProducts());
   },[])
   

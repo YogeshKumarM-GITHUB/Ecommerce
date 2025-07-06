@@ -29,6 +29,7 @@ const PlaceOrder = () => {
 
    
     const [address, setaddress] = useState({
+        OrderDate:"",
         FirstName: '',
         LastName: '',
         EmailAddress: '',
@@ -43,6 +44,7 @@ const PlaceOrder = () => {
         Total: 0,
         PaymentMethod: "",
         UserId: 0,
+        Status:"",
         CartItem: [
             {
                 productId: "",
@@ -50,7 +52,8 @@ const PlaceOrder = () => {
                 price: 0,
                 quantity: 0,
                 total: 0,
-                size: []
+                size: [],
+                image:""
             }
         ]
     });
@@ -62,7 +65,7 @@ const PlaceOrder = () => {
         //const newcartarray=[];
         address.CartItem = [];
         cart.forEach(item => {
-            address.CartItem.push({productId:item.productid,quantity:item.quantity, price:item.price, size:item.size, total:item.quantity*item.price});
+            address.CartItem.push({productId:item.productid,quantity:item.quantity, price:item.price, size:item.size, total:item.quantity*item.price,productName:item.name,image:item.image});
         });
         //setnewCartArray(newcartarray);
     }
@@ -76,7 +79,7 @@ const PlaceOrder = () => {
 
     }
 
-    console.log(UserDetails, '000');
+   // console.log(UserDetails, '000');
     const submitdetails = (e) => {
         e.preventDefault();
         debugger;
@@ -85,11 +88,32 @@ const PlaceOrder = () => {
             return;
         }
         else {
-            console.log()
-            setaddress({...address,PaymentMethod: paymenttype, Subtotal: subtotal, ShippingFee: 10, Total: finalTotal, UserId: UserDetails[0]?._id });
-            dispatch(PLaceOrder({ addressdetails }))
-            navigate('/myorder');
-            toast("Order placed successfully.");
+           const formatted = new Date().toLocaleString('en-IN', {
+    day: 'numeric', month: 'long', year: 'numeric',
+    hour: '2-digit', minute: '2-digit', second: '2-digit',
+    hour12: true
+  }).replace(',', ' at');
+            const fullAddress = {
+                ...address,
+                OrderDate:formatted,
+                PaymentMethod: paymenttype,
+                Subtotal: subtotal,
+                ShippingFee: 10,
+                Total: finalTotal,
+                UserId: UserDetails[0]?._id,
+                Status:"Order Placed"
+            };
+
+            dispatch(PLaceOrder({ cartData:fullAddress })).then((res)=>{
+                if(res?.payload.success){
+                           toast("Order placed successfully.");
+                           navigate('/myorder');
+                }else{
+                    toast("Order placed went wrong");
+                }
+            })
+            
+           
         }
         //console.log(address,paymenttype);
     }

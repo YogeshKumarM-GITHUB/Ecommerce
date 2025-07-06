@@ -13,7 +13,7 @@ const LatestCollection = () => {
         dispatch(GetAllProducts())
     }, [])
 
-   console.log(listofproducts,"LatestCollection")
+  // console.log(listofproducts,"LatestCollection")
     return (
         <div>
             <div>

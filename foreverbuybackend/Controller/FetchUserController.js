@@ -14,7 +14,7 @@ const fetchUserById=async(req,res)=>{
           }
 
           const userdetails=await user.find({Email:Email});
-          console.log(userdetails)
+         // console.log(userdetails)
           if(userdetails){
             return res.status(200).json({
                 success:true,

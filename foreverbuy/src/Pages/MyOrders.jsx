@@ -1,44 +1,54 @@
 import { useSelector } from "react-redux";
 import { assets } from "../assets/frontend_assets/assets";
-
+import { useEffect } from "react";
+import { useDispatch } from "react-redux";
+import { OrderedDetails } from "../features/products/productsSlice";
 const MyOrders = () => {
     const { ordereddetails } = useSelector(state => state.products)
-    console.log(ordereddetails)
+    const { UserDetails } = useSelector(state => state.user)
+    const dispatch = useDispatch();
+    console.log(UserDetails[0]?._id);
+    useEffect(() => {
+        //debugger;
+        const _id = UserDetails[0]?._id;
+        if (_id) {
+            dispatch(OrderedDetails({ _id }));
+        }
+    }, [UserDetails, dispatch])
+
+    console.log(ordereddetails, "OD")
     return (
         <div>
             <div className="mt-10">
                 <h1 className="uppercase text-[#6b7280] text-[20px] text-start">MyOrders</h1>
                 {
-                    ordereddetails?.items?.length > 0 && ordereddetails.items?.map((orderitem, index) => {
-                        return (
-                            <div className="flex flex-col md:flex-row items-starts md:items-center justify-between">
-                                <div>
+                    ordereddetails?.length > 0 && ordereddetails.map((order, index) => (
+                        <div key={order._id} className="mt-4 border-b pb-4">
+                            <h2 className="text-lg font-bold mb-2">Order ID: {order._id}</h2>
+                             <h2 className="text-lg font-bold mb-2">Order Date: {order.OrderDate}</h2>
+                            <h2 className="text-lg font-bold mb-2">Status: {order.Status}</h2>
+                            <p>Payment: <span className="text-gray-500">{order.PaymentMethod}</span></p>
+                            <p>Total: ₹{order.Total}</p>
 
-                                    <div className="flex  flex-col md:flex-row items-start mt-2">
-                                        <hr className="border-b-2 border-gray-600"/>
-                                        <img className="h-full md:h-[140px] w-full md:w-[100px]" src={orderitem.image} />
-                                        <div className="flex flex-col items-start ml-2">
-                                            <h1 className="sm:text-base font-medium"></h1>
-                                            <label>${orderitem.price}</label>
-                                            <label>Quantity: {orderitem.quantity}</label>
-                                            <label>Size : {orderitem.size}</label>
-                                            <label>Date : <span className=" text-gray-400">{ordereddetails.ordereddate}</span></label>
-                                            <label>Payment: <span className=" text-gray-400">{ordereddetails.PaymentType}</span></label>
+                            {order.CartItem.map((item, i) => (
+                                <div key={item._id} className="flex flex-col md:flex-row items-start md:items-center justify-between mt-4">
+                                    <div className="flex flex-col md:flex-row items-start">
+                                        <img className="h-[100px] w-[100px] object-cover mr-4" src={item.image} alt={item.productName} />
+                                        <div>
+                                            <h3 className="font-medium">{item.productName}</h3>
+                                            <p>Price: ₹{item.price}</p>
+                                            <p>Quantity: {item.quantity}</p>
+                                            <p>Size: {item.size}</p>
                                         </div>
-
                                     </div>
-
+                                    <button className="border px-4 py-2 mt-2 text-sm font-medium rounded-sm">{order.Status}</button>
                                 </div>
-                                <div >
-                                    <label className="text-sm md:text-base float-left ml-2 mt-2 md:mt-0">{ordereddetails.status}</label>
-                                </div>
-                                <div>
-                                    <button className="border px-4 py-2 text-sm font-medium rounded-sm float-left ml-2 mt-2 md:mt-0">Track Order</button>
-                                </div>
-                            </div>
-                        )
-                    })
+                            ))}
+                        </div>
+                    ))
                 }
+
+
             </div>
         </div>
     )

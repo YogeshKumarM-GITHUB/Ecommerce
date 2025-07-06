@@ -10,7 +10,8 @@ const CartItemSchema = new mongoose.Schema({
   price: Number,
   quantity: Number,
   total: Number,
-  size:String
+  size:String,
+  image:String
 });
 
 const PlacedOrderItemsSchema = new mongoose.Schema({
@@ -27,6 +28,8 @@ const PlacedOrderItemsSchema = new mongoose.Schema({
     ShippingFee:{type:"Number",required:true},
     Total:{type:"Number",required:true},
     PaymentMethod:{type:"String",required:true},
+    Status:{type:"String",required:true},
+    OrderDate:{type:"String",required:true},
     CartItem:[CartItemSchema],
     UserId:{type: mongoose.Schema.Types.ObjectId,
     ref: 'User',
