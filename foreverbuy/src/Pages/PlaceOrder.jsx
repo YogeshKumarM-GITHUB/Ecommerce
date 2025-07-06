@@ -1,15 +1,16 @@
 import { useEffect, useState } from "react";
 import { assets } from "../assets/frontend_assets/assets";
 import { useDispatch, useSelector } from "react-redux";
-import { placeOrder } from '../features/products/productsSlice'
+import { PLaceOrder } from '../features/products/productsSlice'
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 const PlaceOrder = () => {
     const { cart } = useSelector(state => state.products);
+    const { UserDetails } = useSelector(state => state.user)
     const [subtotal, setsubtotal] = useState(0);
     const [finalTotal, setfinalTotal] = useState(0);
-
-   // console.log(cart);
+     const [newCartArray,setnewCartArray] = useState([]);
+    // console.log(cart);
 
     const calculatetotal = () => {
         let subtotal1 = cart.reduce((sum, item) => {
@@ -20,24 +21,52 @@ const PlaceOrder = () => {
         setfinalTotal((subtotal1 + 10).toFixed(2)); // shipping fee: 10
     };
 
-    useEffect(()=>{
+    useEffect(() => {
         calculatetotal();
-    },[cart])
+        pushcartItems();
+    }, [cart])
 
+
+   
     const [address, setaddress] = useState({
-        firstname: '',
-        lastname: '',
-        email: '',
-        street: '',
-        city: '',
-        state: '',
-        zipcode: '',
-        phone: '',
-        country: ''
+        FirstName: '',
+        LastName: '',
+        EmailAddress: '',
+        Street: '',
+        City: '',
+        State: '',
+        Zipcode: '',
+        Country: '',
+        Phone: '',
+        Subtotal: 0,
+        ShippingFee: 10,
+        Total: 0,
+        PaymentMethod: "",
+        UserId: 0,
+        CartItem: [
+            {
+                productId: "",
+                productName: "",
+                price: 0,
+                quantity: 0,
+                total: 0,
+                size: []
+            }
+        ]
     });
     const [paymenttype, setpaymenttype] = useState("");
     const dispatch = useDispatch();
     const navigate = useNavigate();
+
+     const pushcartItems = () => {
+        //const newcartarray=[];
+        address.CartItem = [];
+        cart.forEach(item => {
+            address.CartItem.push({productId:item.productid,quantity:item.quantity, price:item.price, size:item.size, total:item.quantity*item.price});
+        });
+        //setnewCartArray(newcartarray);
+    }
+
 
     const handleaddressform = (e) => {
         e.preventDefault();
@@ -47,16 +76,20 @@ const PlaceOrder = () => {
 
     }
 
+    console.log(UserDetails, '000');
     const submitdetails = (e) => {
         e.preventDefault();
-        if(!paymenttype){
+        debugger;
+        if (!paymenttype) {
             toast("select payment type.")
             return;
         }
-        else{
-        dispatch(placeOrder({ address, PaymentType: paymenttype }))
-        navigate('/myorder');
-        toast("Order placed successfully.");
+        else {
+            console.log()
+            setaddress({...address,PaymentMethod: paymenttype, Subtotal: subtotal, ShippingFee: 10, Total: finalTotal, UserId: UserDetails[0]?._id });
+            dispatch(PLaceOrder({ addressdetails }))
+            navigate('/myorder');
+            toast("Order placed successfully.");
         }
         //console.log(address,paymenttype);
     }
@@ -69,25 +102,25 @@ const PlaceOrder = () => {
                     <div>
                         <form onSubmit={submitdetails} className="flex flex-col items-start mt-4 max-w-md">
                             <div className="flex flex-row gap-2">
-                                <input className="border border-gray-300 rounded py-1.5 px-3.5 w-full" type="text" name="firstname" placeholder="First name" onChange={handleaddressform} value={address.firstname} required />
-                                <input className="border border-gray-300 rounded py-1.5 px-3.5 w-full" type="text" name="lastname" placeholder="Last name" onChange={handleaddressform} value={address.lastname} required />
+                                <input className="border border-gray-300 rounded py-1.5 px-3.5 w-full" type="text" name="FirstName" placeholder="First name" onChange={handleaddressform} value={address.FirstName} required />
+                                <input className="border border-gray-300 rounded py-1.5 px-3.5 w-full" type="text" name="LastName" placeholder="Last name" onChange={handleaddressform} value={address.LastName} required />
                             </div>
                             <div className="mt-2 w-full">
-                                <input type="email" className="border border-gray-300 py-1.5 px-3.5 w-full " name="email" placeholder="Email Address" onChange={handleaddressform} value={address.email} required />
+                                <input type="email" className="border border-gray-300 py-1.5 px-3.5 w-full " name="EmailAddress" placeholder="Email Address" onChange={handleaddressform} value={address.EmailAddress} required />
                             </div>
                             <div className="mt-2 w-full">
-                                <input type="text" className="border border-gray-300 py-1.5 px-3.5 w-full " name="street" placeholder="Street" onChange={handleaddressform} value={address.street} required />
+                                <input type="text" className="border border-gray-300 py-1.5 px-3.5 w-full " name="Street" placeholder="Street" onChange={handleaddressform} value={address.Street} required />
                             </div>
                             <div className="flex flex-row gap-2 mt-2">
-                                <input className="border border-gray-300 rounded py-1.5 px-3.5 w-full" type="text" name="city" placeholder="City" onChange={handleaddressform} value={address.city} required />
-                                <input className="border border-gray-300 rounded py-1.5 px-3.5 w-full" type="text" name="state" placeholder="State" onChange={handleaddressform} value={address.state} required />
+                                <input className="border border-gray-300 rounded py-1.5 px-3.5 w-full" type="text" name="City" placeholder="City" onChange={handleaddressform} value={address.City} required />
+                                <input className="border border-gray-300 rounded py-1.5 px-3.5 w-full" type="text" name="State" placeholder="State" onChange={handleaddressform} value={address.State} required />
                             </div>
                             <div className="flex flex-row gap-2 mt-2">
-                                <input className="border border-gray-300 rounded py-1.5 px-3.5 w-full" type="text" name="zipcode" placeholder="Zipcode" onChange={handleaddressform} value={address.zipcode} required />
-                                <input className="border border-gray-300 rounded py-1.5 px-3.5 w-full" type="text" name="country" placeholder="Country" onChange={handleaddressform} value={address.country} required />
+                                <input className="border border-gray-300 rounded py-1.5 px-3.5 w-full" type="text" name="Zipcode" placeholder="Zipcode" onChange={handleaddressform} value={address.Zipcode} required />
+                                <input className="border border-gray-300 rounded py-1.5 px-3.5 w-full" type="text" name="Country" placeholder="Country" onChange={handleaddressform} value={address.Country} required />
                             </div>
                             <div className="mt-2 w-full">
-                                <input type="number" className="border border-gray-300 py-1.5 px-3.5 w-full rounded" name="phone" placeholder="Phone" onChange={handleaddressform} value={address.phone} required />
+                                <input type="number" className="border border-gray-300 py-1.5 px-3.5 w-full rounded" name="Phone" placeholder="Phone" onChange={handleaddressform} value={address.Phone} required />
                             </div>
                             <div className="text-right">
                                 <button type="submit" className="bg-black w-[150px] text-white p-2 mt-4 cursor-pointer">Place Order</button>

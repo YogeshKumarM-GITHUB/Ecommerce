@@ -28,7 +28,7 @@ const initialState = {
             phone: '',
             country:''
         }
-    }
+    },placeorder:{}
 }
 
 
@@ -84,6 +84,20 @@ const GetSingleProduct=createAsyncThunk(
     }
 )
 
+const PLaceOrder=createAsyncThunk('Product/PlaceOrder',async(cartData)=>{
+    try{
+        debugger;
+       const response=await axios.post(`${BASEURL}/api/placeorder/addcartitems`,cartData,{headers:{
+                Authorization:`Bearer ${localStorage.getItem('token')}`
+                }
+            });
+//console.log(response.data);
+               return  response.data;
+    }
+    catch(error){
+        console.log(error.response?.data||error.message)
+    }
+})
 
 
 const productsSlice = createSlice({
@@ -230,10 +244,22 @@ const productsSlice = createSlice({
                     state.loading=true;
                     state.success=false;
                     state.error=null;
+                }).addCase(PLaceOrder.pending,(state)=>{
+                    state.loading=true,
+                    state.error=""
+                }).addCase(PLaceOrder.fulfilled,(state,action)=>{
+                    state.loading=false,
+                    state.placeorder=action.payload.data,
+                    state.cart=[]
+
+                }).addCase(PLaceOrder.rejected,(state,action)=>{
+                    state.loading=false,
+                    state.placeorder=null,
+                    state.error=action.payload
                 })
     }
 })
 
-export {GetAllProducts,Getbestsellerproducts,GetSingleProduct}
+export {GetAllProducts,Getbestsellerproducts,GetSingleProduct,PLaceOrder}
 export const { bestsellerProducts, filteringProducts,  OpenGlobalSearch, Addtocart,placeOrder } = productsSlice.actions;
 export default productsSlice.reducer;
