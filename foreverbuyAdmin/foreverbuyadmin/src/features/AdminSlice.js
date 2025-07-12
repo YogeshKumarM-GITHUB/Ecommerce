@@ -1,6 +1,6 @@
 import { createSlice,createAsyncThunk } from "@reduxjs/toolkit";
 import axios from 'axios'
-
+const BASEURL = import.meta.env.VITE_REACT_APP_BASE_URL
 const initialState={
     UserDetails:{},
     loading:false,
@@ -9,7 +9,7 @@ const initialState={
     token:""
 }
 
-const BASEURL = process.env.BASEURLS
+
 
 const RegisteUser=createAsyncThunk(
     'User/RegisterUser',async(userData)=>{
@@ -26,7 +26,7 @@ const RegisteUser=createAsyncThunk(
 const LoginUser=createAsyncThunk(
     'User/LoginUser',async(userData)=>{
               try{
-                //debugger;
+                debugger;
                     const {Email,Password}=userData;
                      const response=await axios.post(`${BASEURL}/api/admin/Login`,{
                         Email,

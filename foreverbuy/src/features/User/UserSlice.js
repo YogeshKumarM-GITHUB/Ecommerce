@@ -9,7 +9,7 @@ const initialState={
     token:""
 }
 
-const BASEURL = 'http://localhost:5000';
+const BASEURL = import.meta.env.VITE_REACT_APP_BASE_URL;
 
 const RegisteUser=createAsyncThunk(
     'User/RegisterUser',async(userData)=>{

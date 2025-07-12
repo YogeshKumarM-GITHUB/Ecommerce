@@ -1,7 +1,7 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import axios from 'axios';
 
- const BASEURL = process.env.BASEURLS
+ const BASEURL = import.meta.env.VITE_REACT_APP_BASE_URL
 const initialState = {
     loading: false,
     error: null,
