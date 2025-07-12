@@ -28,3 +28,5 @@ app.use('/api/placeorder',placeorder);
 app.use('/api/admin',AdminLogin);
 app.use('/api/Adminuserdetails',AdminInfo)
 app.listen(PORT,()=>console.log("server started"));
+
+module.exports=app;

@@ -1,21 +1,37 @@
 {
-  "projects": {
-    "frontend": {
-      "src": "frontend",
-      "use": "@vercel/react",
+  "version": 2,
+  "builds": [
+    {
+      "src": "frontend/package.json",
+      "use": "@vercel/static-build",
       "config": {
-        "rewrites": [{ "source": "/(.*)", "destination": "/" }]
+        "distDir": "build"
       }
     },
-    "admin": {
-      "src": "admin",
-      "use": "@vercel/react",
+    {
+      "src": "admin/package.json",
+      "use": "@vercel/static-build",
       "config": {
-        "rewrites": [{ "source": "/(.*)", "destination": "/" }]
+        "distDir": "build"
       }
     },
-    "backend": {
-      "src": "backend/api"
+    {
+      "src": "foreverbuybackend/index.js",
+      "use": "@vercel/node"
     }
-  }
+  ],
+  "routes": [
+    {
+      "src": "/api/(.*)",
+      "dest": "foreverbuybackend/index.js"
+    },
+    {
+      "src": "/admin/(.*)",
+      "dest": "admin/build/index.html"
+    },
+    {
+      "src": "/(.*)",
+      "dest": "frontend/build/index.html"
+    }
+  ]
 }
