@@ -1,8 +1,7 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import axios from 'axios';
 
-const BASEURL = 'http://localhost:5000';
-
+ const BASEURL = process.env.BASEURLS
 const initialState = {
     loading: false,
     error: null,

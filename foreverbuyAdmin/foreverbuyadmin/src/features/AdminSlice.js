@@ -9,7 +9,7 @@ const initialState={
     token:""
 }
 
-const BASEURL = 'http://localhost:5000';
+const BASEURL = process.env.BASEURLS
 
 const RegisteUser=createAsyncThunk(
     'User/RegisterUser',async(userData)=>{

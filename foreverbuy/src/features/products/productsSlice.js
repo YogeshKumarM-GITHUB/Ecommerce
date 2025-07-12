@@ -2,7 +2,7 @@ import { createSlice,createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios'
 // import { products } from '../../assets/frontend_assets/assets';
 
-const BASEURL = 'http://localhost:5000';
+const BASEURL = process.env.BASEURLS 
 const initialState = {
     listofproducts:[],
     bestseller: [],
