@@ -10,18 +10,24 @@ const CollectionList = () => {
     const [type, setType] = useState([]);
     const [filterbyprice, setfilterbyprice] = useState("");
     const [searchGlobal, setsearchGlobal] = useState("");
-    const { listofproducts, loading, error, globalsearch } = useSelector(state => state.products);
+    const { listofproducts, loading, error, globalsearch,filteredproducts } = useSelector(state => state.products);
     const [showmenu, setshowmenu] = useState(false)
     const dispatch = useDispatch();
     const navigate = useNavigate();
    // console.log(listofproducts,'listofproducts');
-    const filterresults = useEffect(() => {
-        dispatch(filteringProducts({ categories, type, filterbyprice, searchGlobal }))
-    }, [categories, type, filterbyprice, searchGlobal])
+    
 
     useEffect(()=>{
+           // debugger;
             dispatch(GetAllProducts())
     },[])
+
+    const filteringProductsDetails= useEffect(()=>{
+     //debugger;
+        if (!categories || !type || !filterbyprice || !searchGlobal) {
+            dispatch(filteringProducts({ categories, type, filterbyprice, searchGlobal }))
+        }
+    },[categories, type, filterbyprice, searchGlobal])
 
     const handleCategoryChange = (e) => {
         const { value, checked } = e.target;
@@ -102,7 +108,7 @@ const CollectionList = () => {
                             <div className='ml-0 sm:ml-2 mt-4 sm:mt-0'>
                                 <div className='grid grid-cols-[1fr_1fr] sm:grid-cols-[1fr_1fr_1fr_1fr] gap-4'>
                                     {
-                                      listofproducts.length>0 &&  listofproducts.map((product, index) => {
+                                      filteredproducts.length>0 &&  filteredproducts.map((product, index) => {
                                             return (
                                                 <div key={index} className='flex flex-col items-start'>
                                                     <div className='inline-block hover:cursor-pointer' onClick={() => navigate(`/productpage/${product._id}`)}>

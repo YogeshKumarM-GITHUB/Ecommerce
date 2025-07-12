@@ -49,7 +49,7 @@ const Navbar = () => {
                         <p className='font-medium'>Contact</p>
                         <hr className="hidden w-2/4 h-[1.5px] bg-gray-700 " />
                     </NavLink>
-                    <button className='border border-gray-300 rounded-full  text-[#374151]   px-6 py-2 text-[12px] font-medium '>Admin Panel</button>
+                    {/* <button className='border border-gray-300 rounded-full  text-[#374151]   px-6 py-2 text-[12px] font-medium '>Admin Panel</button> */}
                 </ul>
                 <div className='flex flex-row items-center gap-4'>
                     {
@@ -102,9 +102,9 @@ const Navbar = () => {
                 <div className='px-4 border-b-2 border-gray-100 w-full text-start py-2 hover:bg-black'>
                     <p className='text-[16px] text-[#4B5563] hover:text-white'>Contact</p>
                 </div>
-                <div className='px-4 border-b-2 border-gray-100 w-full text-start py-2 hover:bg-black'>
+                {/* <div className='px-4 border-b-2 border-gray-100 w-full text-start py-2 hover:bg-black'>
                     <p className='text-[16px] text-[#4B5563] hover:text-white'>Admin Panel</p>
-                </div>
+                </div> */}
                 {
                     UserDetails.length !== 0 && UserDetails[0]?.UserName ? (
                         <div className='h-6 w-6 bg-green-600 rounded-full text-white flex items-center justify-center text-sm font-medium'>

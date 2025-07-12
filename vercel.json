@@ -1,0 +1,15 @@
+{
+  "projects": {
+    "frontend": {
+      "src": "frontend",
+      "use": "@vercel/react"
+    },
+    "admin": {
+      "src": "admin",
+      "use": "@vercel/react"
+    },
+    "backend": {
+      "src": "backend/api"
+    }
+  }
+}

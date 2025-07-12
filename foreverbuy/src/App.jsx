@@ -84,8 +84,8 @@ function App() {
       <Routes>
         <Route path='/' element={<ProtectedRoute><Home /></ProtectedRoute>} />
         <Route path='/collection' element={<ProtectedRoute><Collection /></ProtectedRoute>} />
-        <Route path='/contact' element={<ProtectedRoute><Contact /></ProtectedRoute>} />
-        <Route path='/about' element={<ProtectedRoute><About /></ProtectedRoute>} />
+        <Route path='/contact' element={<Contact />}/>
+        <Route path='/about' element={<About /> }/>
         <Route path='/productpage/:_id' element={<ProtectedRoute><ProductPage /></ProtectedRoute>} />
         <Route path='/cartpage' element={<ProtectedRoute><CartPage /></ProtectedRoute>} />
         <Route path='/placeorder' element={<ProtectedRoute><PlaceOrder /></ProtectedRoute>} />

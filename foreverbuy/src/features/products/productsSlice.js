@@ -21,11 +21,13 @@ const GetAllProducts=createAsyncThunk(
     'Product/GetAllProducts',
     async()=>{
          try{
+            //debugger;
               const response=await axios.get(`${BASEURL}/api/getproducts`,{
                 headers:{
                     Authorization: `Bearer ${localStorage.getItem('token')}`
                 }
               });
+            //  debugger;
               console.log(response.data,"Products")
               return response.data;
          }
@@ -71,7 +73,7 @@ const GetSingleProduct=createAsyncThunk(
 
 const PLaceOrder=createAsyncThunk('Product/PlaceOrder',async({cartData})=>{
     try{
-        debugger;
+      //  debugger;
        const response=await axios.post(`${BASEURL}/api/placeorder/addcartitems`,cartData,{headers:{
                 Authorization:`Bearer ${localStorage.getItem('token')}`
                 }
@@ -105,42 +107,35 @@ const productsSlice = createSlice({
     name: 'product',
     initialState,
     reducers: {
-        // bestsellerProducts: (state, action) => {
-        //     const bestsellers = state.listofproducts.filter(p => p.bestseller === true);
-        //     state.bestseller = bestsellers;
-        // },
         filteringProducts: (state, action) => {
-            // debugger
-            // Filtering code
             if (state.listofproducts.length == 0) return;
-
             let filtered = state.listofproducts;
             console.log(filtered,'filtered');
             // console.log(action.payload.categories,action.payload.type);
             const { categories = [], type = [], filterbyprice, searchGlobal } = action.payload;
             //console.log(categories,type,action.payload);
-            let maxprice = Math.max(...state.listofproducts.map(p => p.price));
-            let minprice = Math.min(...state.listofproducts.map(p => p.price));
+            let maxprice = Math.max(...state.listofproducts.map(p => p.ProductPrice));
+            let minprice = Math.min(...state.listofproducts.map(p => p.ProductPrice));
 
             if (searchGlobal) {
                 //console.log(action.payload)
-                filtered = filtered.filter(p => p.name.toLowerCase().includes(searchGlobal.toLowerCase()))
+                filtered = filtered.filter(p => p.ProductName.toLowerCase().includes(searchGlobal.toLowerCase()))
             }
             if (categories?.length > 0) {
-                filtered = filtered.filter(p => categories.includes(p.category));
+                filtered = filtered.filter(p => p.ProductCategory.includes(categories));
                 // console.log(categories);
             }
             if (type?.length > 0) {
-                filtered = filtered.filter(p => type.includes(p.subCategory));
+                filtered = filtered.filter(p => p.ProductSubCategory.includes(type));
                 // setfinalfilterproducts(...filtered,filtered)
             }
 
             if (filterbyprice === 'sortbylowtohigh') {
-                filtered = filtered.slice().sort((a, b) => a.price - b.price);
+                filtered = filtered.slice().sort((a, b) => a.ProductPrice - b.ProductPrice);
             } else if (filterbyprice === 'sortbyhightolow') {
-                filtered = filtered.slice().sort((a, b) => b.price - a.price);
+                filtered = filtered.slice().sort((a, b) => b.ProductPrice - a.ProductPrice);
             } else if (filterbyprice === 'sortbyrelevant') {
-                filtered = filtered.filter(p => p.price >= minprice && p.price <= maxprice);
+                filtered = filtered.filter(p => p.ProductPrice >= minprice && p.ProductPrice <= maxprice);
             }
             state.filteredproducts = filtered;
             //end of filtering code
@@ -214,6 +209,7 @@ const productsSlice = createSlice({
                     state.loading = false;
                     state.success = true;
                     state.listofproducts = action.payload.data;
+                    state.filteredproducts=action.payload.data;
                 })
                 .addCase(GetAllProducts.rejected, (state, action) => {
                     state.loading = false;
