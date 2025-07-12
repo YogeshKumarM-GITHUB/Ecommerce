@@ -1,0 +1,3 @@
+https://ecommercebackend-delta-pied.vercel.app--backendend
+https://ecommerceadmin-kappa.vercel.app/login --admin panel
+https://ecommercefrontend-three-lovat.vercel.app/login--front end panel
