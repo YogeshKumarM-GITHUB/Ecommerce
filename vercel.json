@@ -2,11 +2,17 @@
   "projects": {
     "frontend": {
       "src": "frontend",
-      "use": "@vercel/react"
+      "use": "@vercel/react",
+      "config": {
+        "rewrites": [{ "source": "/(.*)", "destination": "/" }]
+      }
     },
     "admin": {
       "src": "admin",
-      "use": "@vercel/react"
+      "use": "@vercel/react",
+      "config": {
+        "rewrites": [{ "source": "/(.*)", "destination": "/" }]
+      }
     },
     "backend": {
       "src": "backend/api"
