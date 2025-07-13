@@ -8,10 +8,10 @@ const router = express.Router();
 router.post(
   '/addproduct',
   upload.fields([
-    { name: 'FirstImage' },
-    { name: 'SecondImage' },
-    { name: 'ThirdImage' },
-    { name: 'FourthImage' }
+    { name: 'FirstImage',maxCount:1 },
+    { name: 'SecondImage',maxCount:1 },
+    { name: 'ThirdImage',maxCount:1 },
+    { name: 'FourthImage',maxCount:1 }
   ]),
   AddProduct
 );

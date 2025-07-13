@@ -3,22 +3,35 @@ const cloudinary = require('../Config/CloudinaryConfig.js');
 const fs = require('fs');
 const Product = require('../Model/Product.js');
 
-const uploadToCloudinary = async (filePath) => {
-    const result = await cloudinary.uploader.upload(filePath);
-    fs.unlinkSync(filePath); // delete after upload
-    return result.secure_url;
+// const uploadToCloudinary = async (filePath) => {
+//     const result = await cloudinary.uploader.upload(filePath);
+//     fs.unlinkSync(filePath); // delete after upload
+//     return result.secure_url;
+// };
+
+const uploadToCloudinary = async (fileBuffer) => {
+  return new Promise((resolve, reject) => {
+    const stream = cloudinary.uploader.upload_stream(
+      { folder: "products" },
+      (error, result) => {
+        if (error) return reject(error);
+        resolve(result.secure_url);
+      }
+    );
+    stream.end(fileBuffer);
+  });
 };
+
 
 const AddProduct = async (req, res) => {
     try {
-        //debugger
         const imageFields = ['FirstImage', 'SecondImage', 'ThirdImage', 'FourthImage'];
         const imageUrls = {};
-     //  console.log(req.files);
+
         for (const field of imageFields) {
             if (req.files[field]) {
-                const localPath = req.files[field][0].path;
-                const cloudinaryUrl = await uploadToCloudinary(localPath);
+                const fileBuffer = req.files[field][0].buffer;
+                const cloudinaryUrl = await uploadToCloudinary(fileBuffer);
                 imageUrls[field] = cloudinaryUrl;
             }
         }
@@ -33,8 +46,7 @@ const AddProduct = async (req, res) => {
             Addtobestseller
         } = req.body;
 
-      
-        const newProduct = new product({
+        const newProduct = new Product({
             FirstImage: imageUrls.FirstImage || '',
             SecondImage: imageUrls.SecondImage || '',
             ThirdImage: imageUrls.ThirdImage || '',
@@ -44,7 +56,7 @@ const AddProduct = async (req, res) => {
             ProductCategory,
             ProductSubCategory,
             ProductPrice,
-            ProductSizes,
+            ProductSizes: Array.isArray(ProductSizes) ? ProductSizes : [ProductSizes],
             Addtobestseller
         });
 
@@ -57,13 +69,71 @@ const AddProduct = async (req, res) => {
         });
 
     } catch (error) {
-        res.status(400).json({
+        res.status(500).json({
             success: false,
             message: error.message,
-            files:req.files
+            files: req.files
         });
     }
 };
+
+
+// const AddProduct = async (req, res) => {
+//     try {
+//         debugger
+//         const imageFields = ['FirstImage', 'SecondImage', 'ThirdImage', 'FourthImage'];
+//         const imageUrls = {};
+//      //  console.log(req.files);
+//         for (const field of imageFields) {
+//             if (req.files[field]) {
+//                 const localPath = req.files[field][0].path;
+//                 const cloudinaryUrl = await uploadToCloudinary(localPath);
+//                 imageUrls[field] = cloudinaryUrl;
+//             }
+//         }
+
+
+//         const {
+//             ProductName,
+//             ProductDescrption,
+//             ProductCategory,
+//             ProductSubCategory,
+//             ProductPrice,
+//             ProductSizes,
+//             Addtobestseller
+//         } = req.body;
+
+//         console.log(imageFields,imageUrls)
+//         const newProduct = new product({
+//             FirstImage: imageUrls.FirstImage || '',
+//             SecondImage: imageUrls.SecondImage || '',
+//             ThirdImage: imageUrls.ThirdImage || '',
+//             FourthImage: imageUrls.FourthImage || '',
+//             ProductName,
+//             ProductDescrption,
+//             ProductCategory,
+//             ProductSubCategory,
+//             ProductPrice,
+//             ProductSizes,
+//             Addtobestseller
+//         });
+
+//         await newProduct.save();
+
+//         res.status(201).json({
+//             success: true,
+//             message: "Product added successfully",
+//             data: newProduct
+//         });
+
+//     } catch (error) {
+//         res.status(400).json({
+//             success: false,
+//             message: error.message,
+//             files:req.files
+//         });
+//     }
+// };
 
 const GetAllProducts = async (req, res) => {
     try {

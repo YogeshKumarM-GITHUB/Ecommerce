@@ -16,6 +16,7 @@ const AddProducts = createAsyncThunk(
     'Product/AddProduct',
     async (productdata, { rejectWithValue }) => {
         try {
+            debugger;
             const response = await axios.post(`${BASEURL}/api/addproduct`, productdata, {
                 headers: {
                     'Content-Type': 'multipart/form-data',
