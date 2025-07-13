@@ -17,7 +17,14 @@ const MongoDBURL=process.env.MONGDODBURL;
 const PORT=process.env.PORT|| 5000;
 
 
-mongoose.connect(MongoDBURL).then(()=>console.log('mongdodbconnected')).catch(err=>console.log(err));
+mongoose.connect(MongoDBURL, {
+  serverSelectionTimeoutMS: 15000,
+  socketTimeoutMS: 20000,
+})
+.then(() => console.log('MongoDB connected'))
+.catch(err => {
+  process.exit(1); // optional exit
+});
 app.get('/',(req,res)=>{
     res.send("started server")
 })
